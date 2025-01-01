@@ -1,5 +1,5 @@
-import DefaultLayout from './layouts/default-layout';
-import DashboardPage from './view/dashboard/page';
+import DefaultLayout from '~layouts/default-layout';
+import DashboardPage from '~view/dashboard/page';
 
 function App() {
     return (

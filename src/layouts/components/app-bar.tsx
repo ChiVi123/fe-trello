@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import SelectThemeMode from '../../shared/components/select-theme-mode';
+import SelectThemeMode from '~components/select-theme-mode';
 
 function AppBar() {
     return (
