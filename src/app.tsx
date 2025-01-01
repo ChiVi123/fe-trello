@@ -1,14 +1,12 @@
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import HomeIcon from '@mui/icons-material/Home';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { pink } from '@mui/material/colors';
 import { useColorScheme } from '@mui/material/styles';
 
 function SelectThemeMode() {
@@ -56,45 +54,40 @@ function SelectThemeMode() {
     );
 }
 
-function ModeSwitcher() {
-    const { mode, setMode } = useColorScheme();
-
-    if (!mode) {
-        return null;
-    }
-
-    return (
-        <select
-            value={mode}
-            onChange={(event) => {
-                setMode(event.target.value as 'light' | 'dark' | 'system');
-            }}
-        >
-            <option value='system'>System</option>
-            <option value='light'>Light</option>
-            <option value='dark'>Dark</option>
-        </select>
-    );
-}
-
 function App() {
     return (
-        <>
-            <SelectThemeMode />
-            <hr />
-            <ModeSwitcher />
-            <div>hello</div>
-            <Button variant='text'>Text</Button>
-            <Button variant='contained'>Contained</Button>
-            <Button variant='outlined'>Outlined</Button>
-            <HomeIcon />
-            <HomeIcon color='primary' />
-            <HomeIcon color='secondary' />
-            <HomeIcon color='success' />
-            <HomeIcon color='action' />
-            <HomeIcon color='disabled' />
-            <HomeIcon sx={{ color: pink[500] }} />
-        </>
+        <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: ({ trello }) => trello.appBarHeight,
+                    bgcolor: 'primary.light',
+                }}
+            >
+                <SelectThemeMode />
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: ({ trello }) => trello.boardBarHeight,
+                    bgcolor: 'primary.dark',
+                }}
+            >
+                Board bar
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: ({ trello }) => `calc(100vh - ${trello.appBarHeight} - ${trello.boardBarHeight})`,
+                    bgcolor: 'primary.main',
+                }}
+            >
+                Board content
+            </Box>
+        </Container>
     );
 }
 
