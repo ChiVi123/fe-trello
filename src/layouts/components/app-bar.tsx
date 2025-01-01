@@ -1,5 +1,6 @@
 import AppsIcon from '@mui/icons-material/Apps';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -21,8 +22,8 @@ function AppBar() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 2,
-                overflowX: 'auto',
                 height: ({ trello }) => trello.appBarHeight,
+                overflowX: 'auto',
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -45,7 +46,9 @@ function AppBar() {
                     <DropdownMenu label='Started' />
                     <DropdownMenu label='Templates' />
 
-                    <Button variant='outlined'>Create</Button>
+                    <Button variant='outlined' startIcon={<LibraryAddIcon />}>
+                        Create
+                    </Button>
                 </Box>
             </Box>
 
