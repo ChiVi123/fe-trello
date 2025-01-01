@@ -28,6 +28,8 @@
             "~core/*": ["./src/core/*"],
             "~layouts/*": ["./src/layouts/*"],
             "~components/*": ["./src/shared/components/*"],
+            "~icon/*": ["./src/shared/assets/icon/*"],
+            "~svg/*": ["./src/shared/assets/svg/*"],
             "~utils/*": ["./src/shared/utils/*"],
             "~view/*": ["./src/view/*"]
         }
