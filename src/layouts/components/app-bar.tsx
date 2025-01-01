@@ -20,6 +20,8 @@ function AppBar() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: 2,
+                overflowX: 'auto',
                 height: ({ trello }) => trello.appBarHeight,
             }}
         >
@@ -37,16 +39,18 @@ function AppBar() {
                     </Typography>
                 </Box>
 
-                <DropdownMenu label='Workspaces' />
-                <DropdownMenu label='Recent' />
-                <DropdownMenu label='Started' />
-                <DropdownMenu label='Templates' />
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
+                    <DropdownMenu label='Workspaces' />
+                    <DropdownMenu label='Recent' />
+                    <DropdownMenu label='Started' />
+                    <DropdownMenu label='Templates' />
 
-                <Button variant='outlined'>Create</Button>
+                    <Button variant='outlined'>Create</Button>
+                </Box>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <TextField id='search-bar' label='Search' type='search' size='small' />
+                <TextField id='search-bar' label='Search' type='search' size='small' sx={{ minWidth: 120 }} />
 
                 <SelectThemeMode />
 
