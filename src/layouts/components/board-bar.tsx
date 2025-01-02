@@ -62,12 +62,14 @@ function BoardBar() {
                     max={7}
                     sx={{
                         gap: 0.5,
-                        '.MuiAvatar-root': {
+                        '& .MuiAvatar-root': {
                             width: 32,
                             height: 32,
                             fontSize: 14,
                             border: '1px solid white',
                             transition: ({ transitions }) => transitions.create(['transform']),
+                            cursor: 'pointer',
+                            '&:first-of-type': { bgcolor: '#a4b0de', color: '#121212' },
                             '&:hover:not(.MuiAvatar-colorDefault)': { transform: 'scale(1.2)' },
                         },
                     }}

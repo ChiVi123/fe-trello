@@ -11,7 +11,6 @@ function DefaultLayout({ children }: { children: ReactNode }) {
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'center',
                     height: ({ trello }) => `calc(100vh - ${trello.appBarHeight})`,
                     bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
                 }}
