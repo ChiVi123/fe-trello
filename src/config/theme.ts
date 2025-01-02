@@ -1,11 +1,19 @@
-// import { cyan, deepOrange, orange, teal } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
+
+const APP_BAR_HEIGHT = '58px';
+const BOARD_BAR_HEIGHT = '58px';
+const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
+const COLUMN_HEADER_HEIGHT = '50px';
+const COLUMN_FOOTER_HEIGHT = '56px';
 
 declare module '@mui/material/styles' {
     interface Theme {
         trello: {
             appBarHeight: string;
             boardBarHeight: string;
+            boardContentHeight: string;
+            columnHeaderHeight: string;
+            columnFooterHeight: string;
         };
     }
     // allow configuration using `createTheme()`
@@ -13,6 +21,9 @@ declare module '@mui/material/styles' {
         trello?: {
             appBarHeight?: string;
             boardBarHeight?: string;
+            boardContentHeight?: string;
+            columnHeaderHeight?: string;
+            columnFooterHeight?: string;
         };
     }
 }
@@ -38,6 +49,11 @@ const theme = createTheme({
                 },
             },
         },
+        MuiTypography: {
+            styleOverrides: {
+                root: { '&.MuiTypography-body1': { fontSize: '0.875rem' } },
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: { textTransform: 'none', borderWidth: 0.5 },
@@ -59,8 +75,11 @@ const theme = createTheme({
         },
     },
     trello: {
-        appBarHeight: '58px',
-        boardBarHeight: '60px',
+        appBarHeight: APP_BAR_HEIGHT,
+        boardBarHeight: BOARD_BAR_HEIGHT,
+        boardContentHeight: BOARD_CONTENT_HEIGHT,
+        columnHeaderHeight: COLUMN_HEADER_HEIGHT,
+        columnFooterHeight: COLUMN_FOOTER_HEIGHT,
     },
 });
 

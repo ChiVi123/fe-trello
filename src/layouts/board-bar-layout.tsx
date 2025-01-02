@@ -13,9 +13,9 @@ function BoardBarLayout({ children }: { children: ReactNode }) {
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'center',
-                    height: ({ trello }) => `calc(100vh - ${trello.appBarHeight} - ${trello.boardBarHeight})`,
+                    height: ({ trello }) => trello.boardContentHeight,
                     bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+                    py: '10px',
                 }}
             >
                 {children}
