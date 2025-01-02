@@ -35,6 +35,7 @@ function DropdownMenu({ label }: IProps) {
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 endIcon={<ExpandMoreIcon />}
+                sx={{ color: 'white' }}
                 onClick={handleClick}
             >
                 {label}

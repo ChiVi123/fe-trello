@@ -13,11 +13,11 @@ import Tooltip from '@mui/material/Tooltip';
 
 const MENU_STYLE = {
     px: '5px',
-    bgcolor: 'white',
+    bgcolor: 'transparent',
     border: 'none',
     borderRadius: '4px',
-    color: 'primary.main',
-    '& .MuiSvgIcon-root': { color: 'primary.main' },
+    color: 'white',
+    '& .MuiSvgIcon-root': { color: 'white' },
     '&:hover': { bgcolor: 'primary.50' },
 };
 
@@ -30,8 +30,9 @@ function BoardBar() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 2,
-                height: ({ trello }) => trello.appBarHeight,
-                borderTop: ({ palette }) => `1px solid ${palette.primary.main}`,
+                height: ({ trello }) => trello.boardBarHeight,
+                bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+                borderBottom: '1px solid white',
                 overflowX: 'auto',
             }}
         >
@@ -48,11 +49,29 @@ function BoardBar() {
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Button variant='outlined' size='small' startIcon={<PersonAddIcon />}>
+                <Button
+                    variant='outlined'
+                    size='small'
+                    startIcon={<PersonAddIcon />}
+                    sx={{ color: 'white', borderColor: 'white', '&:hover': { borderColor: 'white' } }}
+                >
                     Invite
                 </Button>
 
-                <AvatarGroup max={7}>
+                <AvatarGroup
+                    max={7}
+                    sx={{
+                        gap: 0.5,
+                        '.MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            fontSize: 14,
+                            border: '1px solid white',
+                            transition: ({ transitions }) => transitions.create(['transform']),
+                            '&:hover:not(.MuiAvatar-colorDefault)': { transform: 'scale(1.2)' },
+                        },
+                    }}
+                >
                     <Tooltip title='Remy Sharp'>
                         <Avatar
                             alt='Remy Sharp'

@@ -22,12 +22,23 @@ export default function SelectThemeMode() {
 
     return (
         <FormControl size='small' sx={{ minWidth: 120 }}>
-            <InputLabel id='label-select-theme-mode'>Mode</InputLabel>
+            <InputLabel id='label-select-theme-mode' sx={{ color: 'white', '&.Mui-focused': { color: 'white' } }}>
+                Mode
+            </InputLabel>
+
             <Select
                 labelId='label-select-theme-mode'
                 id='select-theme-mode'
                 value={mode}
                 label='Mode'
+                sx={{
+                    color: 'white',
+                    '.MuiOutlinedInput-notchedOutline, &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline':
+                        {
+                            borderColor: 'white',
+                        },
+                    '.MuiSvgIcon-root': { color: 'white' },
+                }}
                 onChange={handleChange}
             >
                 <MenuItem value='light'>
