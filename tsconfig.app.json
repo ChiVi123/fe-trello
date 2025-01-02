@@ -27,6 +27,7 @@
             "~config/*": ["./src/config/*"],
             "~core/*": ["./src/core/*"],
             "~layouts/*": ["./src/layouts/*"],
+            "~modules/*": ["./src/modules/*"],
             "~components/*": ["./src/shared/components/*"],
             "~icon/*": ["./src/shared/assets/icon/*"],
             "~svg/*": ["./src/shared/assets/svg/*"],

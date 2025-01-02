@@ -16,9 +16,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { MouseEventHandler, useState } from 'react';
+import { IColumnEntity } from '~modules/column/entity';
+import { mapOrder } from '~utils/sorts';
 import ListCards from './list-cards';
 
-function Column() {
+interface IProps {
+    data: IColumnEntity;
+}
+
+function Column({ data }: IProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick: MouseEventHandler<HTMLElement> = (event) => {
@@ -27,6 +33,8 @@ function Column() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const orderedCards = mapOrder(data.cards, data.cardOrderIds, '_id');
 
     return (
         <Box
@@ -51,7 +59,7 @@ function Column() {
                 }}
             >
                 <Typography variant='h6' fontWeight='bold' sx={{ fontSize: '1rem', cursor: 'pointer' }}>
-                    Column title
+                    {data.title}
                 </Typography>
 
                 <Box>
@@ -116,7 +124,7 @@ function Column() {
             </Box>
 
             {/* List cards */}
-            <ListCards />
+            <ListCards data={orderedCards} />
 
             {/* Footer */}
             <Box

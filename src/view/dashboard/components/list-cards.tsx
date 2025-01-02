@@ -1,7 +1,12 @@
 import Box from '@mui/material/Box';
+import { ICardEntity } from '~modules/card/entity';
 import Card from './card';
 
-function ListCards() {
+interface IProps {
+    data: ICardEntity[];
+}
+
+function ListCards({ data }: IProps) {
     return (
         <Box
             sx={{
@@ -22,12 +27,9 @@ function ListCards() {
                 '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#bfc2cf' },
             }}
         >
-            <Card />
-            <Card temporaryHiddenMedia />
-            <Card temporaryHiddenMedia />
-            <Card temporaryHiddenMedia />
-            <Card temporaryHiddenMedia />
-            <Card temporaryHiddenMedia />
+            {data.map((item) => (
+                <Card key={item._id} data={item} />
+            ))}
         </Box>
     );
 }
