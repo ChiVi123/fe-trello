@@ -73,6 +73,13 @@ const theme = createTheme({
                 },
             },
         },
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    '& .MuiChip-label': { marginTop: '2px', lineHeight: 1 },
+                },
+            },
+        },
     },
     trello: {
         appBarHeight: APP_BAR_HEIGHT,
