@@ -10,6 +10,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
+import { mockData } from '~modules/mock-data';
+import { capitalizeFirstLetter } from '~utils/formatters';
 
 const MENU_STYLE = {
     px: '5px',
@@ -22,6 +24,7 @@ const MENU_STYLE = {
 };
 
 function BoardBar() {
+    const { board } = mockData;
     return (
         <Box
             px={2}
@@ -36,9 +39,9 @@ function BoardBar() {
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Chip label='account' icon={<DashboardIcon />} clickable sx={MENU_STYLE} />
+                <Chip label={board.title} icon={<DashboardIcon />} clickable sx={MENU_STYLE} />
 
-                <Chip label='Public/Private' icon={<VpnLockIcon />} clickable sx={MENU_STYLE} />
+                <Chip label={capitalizeFirstLetter(board.type)} icon={<VpnLockIcon />} clickable sx={MENU_STYLE} />
 
                 <Chip label='Add to Google Drive' icon={<AddToDriveIcon />} clickable sx={MENU_STYLE} />
 
