@@ -1,11 +1,11 @@
-import DefaultLayout from '~layouts/default-layout';
+import BoardBarLayout from '~layouts/board-bar-layout';
 import DashboardPage from '~view/dashboard/page';
 
 function App() {
     return (
-        <DefaultLayout>
+        <BoardBarLayout>
             <DashboardPage />
-        </DefaultLayout>
+        </BoardBarLayout>
     );
 }
 
