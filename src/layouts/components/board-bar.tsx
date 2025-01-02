@@ -32,7 +32,6 @@ function BoardBar() {
                 gap: 2,
                 height: ({ trello }) => trello.boardBarHeight,
                 bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
-                borderBottom: '1px solid white',
                 overflowX: 'auto',
             }}
         >

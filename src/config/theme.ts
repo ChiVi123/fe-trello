@@ -3,6 +3,8 @@ import { createTheme } from '@mui/material/styles';
 const APP_BAR_HEIGHT = '58px';
 const BOARD_BAR_HEIGHT = '58px';
 const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
+const COLUMN_HEADER_HEIGHT = '50px';
+const COLUMN_FOOTER_HEIGHT = '56px';
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -10,6 +12,8 @@ declare module '@mui/material/styles' {
             appBarHeight: string;
             boardBarHeight: string;
             boardContentHeight: string;
+            columnHeaderHeight: string;
+            columnFooterHeight: string;
         };
     }
     // allow configuration using `createTheme()`
@@ -18,6 +22,8 @@ declare module '@mui/material/styles' {
             appBarHeight?: string;
             boardBarHeight?: string;
             boardContentHeight?: string;
+            columnHeaderHeight?: string;
+            columnFooterHeight?: string;
         };
     }
 }
@@ -72,6 +78,8 @@ const theme = createTheme({
         appBarHeight: APP_BAR_HEIGHT,
         boardBarHeight: BOARD_BAR_HEIGHT,
         boardContentHeight: BOARD_CONTENT_HEIGHT,
+        columnHeaderHeight: COLUMN_HEADER_HEIGHT,
+        columnFooterHeight: COLUMN_FOOTER_HEIGHT,
     },
 });
 
