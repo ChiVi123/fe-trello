@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import Cloud from '@mui/icons-material/Cloud';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -15,7 +17,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { MouseEventHandler, useState } from 'react';
+import { CSSProperties, MouseEventHandler, useState } from 'react';
 import { IColumnEntity } from '~modules/column/entity';
 import { mapOrder } from '~utils/sorts';
 import ListCards from './list-cards';
@@ -25,6 +27,16 @@ interface IProps {
 }
 
 function Column({ data }: IProps) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: data._id,
+        data: { ...data },
+    });
+    const dndKitColumnStyles: CSSProperties = {
+        // https://github.com/clauderic/dnd-kit/issues/117
+        transform: CSS.Translate.toString(transform),
+        transition,
+    };
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick: MouseEventHandler<HTMLElement> = (event) => {
@@ -38,6 +50,10 @@ function Column({ data }: IProps) {
 
     return (
         <Box
+            ref={setNodeRef}
+            style={dndKitColumnStyles}
+            {...attributes}
+            {...listeners}
             sx={{
                 minWidth: '300px',
                 maxWidth: '300px',
