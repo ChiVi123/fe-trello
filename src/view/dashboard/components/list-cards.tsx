@@ -1,3 +1,4 @@
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import Box from '@mui/material/Box';
 import { ICardEntity } from '~modules/card/entity';
 import Card from './card';
@@ -27,9 +28,11 @@ function ListCards({ data }: IProps) {
                 '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#bfc2cf' },
             }}
         >
-            {data.map((item) => (
-                <Card key={item._id} data={item} />
-            ))}
+            <SortableContext items={data.map((item) => item._id)} strategy={verticalListSortingStrategy}>
+                {data.map((item) => (
+                    <Card key={item._id} data={item} />
+                ))}
+            </SortableContext>
         </Box>
     );
 }
