@@ -27,7 +27,7 @@ function Card({ data }: IProps) {
         opacity: isDragging ? 0.5 : undefined,
         transition,
     };
-    const shouldShowCardActions = !!data.memberIds.length || !!data.comments.length || !!data.attachments.length;
+    const shouldShowCardActions = !!data?.memberIds?.length || !!data?.comments?.length || !!data?.attachments?.length;
 
     return (
         <MuiCard
@@ -35,7 +35,13 @@ function Card({ data }: IProps) {
             style={dndKitCardStyles}
             {...attributes}
             {...listeners}
-            sx={{ boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)', overflow: 'unset' }}
+            sx={{
+                boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
+                overflow: 'unset',
+                display: data?.FE_PlaceholderCard ? 'none' : 'block',
+                // height: data?.FE_PlaceholderCard ? '0px': 'unset',
+                // overflow: data?.FE_PlaceholderCard ? 'hidden': 'unset',
+            }}
         >
             {data.cover && <CardMedia sx={{ height: 140 }} image={data.cover} title={data.title} />}
 
@@ -44,19 +50,19 @@ function Card({ data }: IProps) {
             </CardContent>
             {shouldShowCardActions && (
                 <CardActions sx={{ p: '0 4px 8px 4px' }}>
-                    {Boolean(data.memberIds.length) && (
+                    {Boolean(data?.memberIds?.length) && (
                         <Button size='small' startIcon={<GroupIcon />}>
-                            {data.memberIds.length}
+                            {data?.memberIds?.length}
                         </Button>
                     )}
-                    {Boolean(data.comments.length) && (
+                    {Boolean(data?.comments?.length) && (
                         <Button size='small' startIcon={<CommentIcon />}>
-                            {data.comments.length}
+                            {data?.comments?.length}
                         </Button>
                     )}
-                    {Boolean(data.attachments.length) && (
+                    {Boolean(data?.attachments?.length) && (
                         <Button size='small' startIcon={<AttachmentIcon />}>
-                            {data.attachments.length}
+                            {data?.attachments?.length}
                         </Button>
                     )}
                 </CardActions>
