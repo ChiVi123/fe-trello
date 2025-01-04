@@ -22,11 +22,12 @@ import { arrayMove, horizontalListSortingStrategy, SortableContext } from '@dnd-
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
 import { mockData } from '~modules/mock-data';
+import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
 import Card from './components/card';
 import Column from './components/column';
@@ -126,6 +127,9 @@ function DashboardPage() {
 
             if (nextActiveColumn) {
                 nextActiveColumn.cards = nextActiveColumn.cards.filter((item) => item._id !== activeCardId);
+                if (isEmpty(nextActiveColumn.cards)) {
+                    nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)];
+                }
                 nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map((item) => item._id);
             }
             if (nextOverColumn) {
@@ -135,6 +139,7 @@ function DashboardPage() {
                     ...activeCardData,
                     columnId: nextOverColumn._id,
                 } as ICardEntity);
+                nextOverColumn.cards = nextOverColumn.cards.filter((item) => !item?.FE_PlaceholderCard);
                 nextOverColumn.cardOrderIds = nextOverColumn.cards.map((item) => item._id);
             }
             return nextColumns;
