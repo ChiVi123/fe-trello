@@ -1,4 +1,5 @@
 import {
+    closestCorners,
     defaultDropAnimationSideEffects,
     DndContext,
     DragEndEvent,
@@ -149,6 +150,8 @@ function DashboardPage() {
     return (
         <DndContext
             sensors={sensors}
+            // https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms
+            collisionDetection={closestCorners}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
