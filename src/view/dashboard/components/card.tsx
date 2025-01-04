@@ -22,6 +22,7 @@ function Card({ data }: IProps) {
         data: { ...data },
     });
     const dndKitCardStyles: CSSProperties = {
+        border: isDragging ? '1px solid #2ecc71' : undefined,
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : undefined,
         transition,
