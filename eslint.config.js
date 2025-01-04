@@ -28,7 +28,8 @@ export default tseslint.config(
         {
           'patterns': ['@mui/*/*/*']
         }
-      ]
+      ],
+      'no-console': 1,
     },
   },
 )
