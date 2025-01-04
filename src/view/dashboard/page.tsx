@@ -1,6 +1,7 @@
 import {
     Active,
     closestCorners,
+    CollisionDetection,
     defaultDropAnimationSideEffects,
     DndContext,
     DragEndEvent,
@@ -8,8 +9,10 @@ import {
     DragOverlay,
     DragStartEvent,
     DropAnimation,
+    getFirstCollision,
     MouseSensor,
     Over,
+    pointerWithin,
     TouchSensor,
     UniqueIdentifier,
     useSensor,
@@ -20,7 +23,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { cloneDeep } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
 import { mockData } from '~modules/mock-data';
@@ -54,6 +57,8 @@ function DashboardPage() {
     const [activeDragItemData, setActiveDragItemData] = useState<IColumnEntity | ICardEntity | null>(null);
     const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState<IColumnEntity | null>(null);
 
+    const lastOverId = useRef<UniqueIdentifier | null>(null);
+
     // https://docs.dndkit.com/api-documentation/sensors
     // Require the mouse to move by 10 pixels before activating
     const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } });
@@ -62,13 +67,39 @@ function DashboardPage() {
     // Better user experience in pc, tablet and mobile
     const sensors = useSensors(mouseSensor, touchSensor);
 
+    const collisionDetectionStrategy: CollisionDetection = useCallback(
+        (args) => {
+            if (activeDragItemType === 'column') {
+                return closestCorners({ ...args });
+            }
+            const pointerIntersections = pointerWithin(args);
+
+            if (!pointerIntersections?.length) return [];
+
+            let overId = getFirstCollision(pointerIntersections, 'id');
+
+            if (!overId) return lastOverId.current ? [{ id: lastOverId.current }] : [];
+
+            const checkColumn = orderedColumns.find((item) => item._id === overId);
+
+            if (checkColumn) {
+                overId = closestCorners({
+                    ...args,
+                    droppableContainers: args.droppableContainers.filter(
+                        (item) => item.id !== overId && checkColumn.cardOrderIds.includes(item.id as string)
+                    ),
+                })[0]?.id;
+            }
+
+            lastOverId.current = overId;
+            return [{ id: overId }];
+        },
+        [activeDragItemType, orderedColumns]
+    );
+
     const customDropAnimation: DropAnimation = {
         sideEffects: defaultDropAnimationSideEffects({
-            styles: {
-                active: {
-                    opacity: '0.5',
-                },
-            },
+            styles: { active: { opacity: '0.5' } },
         }),
     };
 
@@ -220,7 +251,8 @@ function DashboardPage() {
         <DndContext
             sensors={sensors}
             // https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms
-            collisionDetection={closestCorners}
+            // collisionDetection={closestCorners}
+            collisionDetection={collisionDetectionStrategy}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
