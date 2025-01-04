@@ -41,6 +41,7 @@ function DashboardPage() {
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
     const [activeDragItemData, setActiveDragItemData] = useState<IColumnEntity | ICardEntity | null>(null);
+    const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState<IColumnEntity | null>(null);
 
     // https://docs.dndkit.com/api-documentation/sensors
     // Require the mouse to move by 10 pixels before activating
@@ -73,6 +74,10 @@ function DashboardPage() {
         setActiveDragItemId(active.id);
         setActiveDragItemType(checkDragItemCard(currentData) ? 'card' : 'column');
         setActiveDragItemData(currentData as ICardEntity | IColumnEntity);
+
+        if (checkDragItemCard(currentData)) {
+            setOldColumnWhenDraggingCard(findColumnByCardId(active.id as string, orderedColumns) || null);
+        }
     };
     const handleDragOver = (event: DragOverEvent) => {
         if (activeDragItemType === 'column') return;
@@ -121,30 +126,59 @@ function DashboardPage() {
         });
     };
     const handleDragEnd = (event: DragEndEvent) => {
-        // console.log('handleDragEnd::', event);
-
-        if (activeDragItemType === 'card') {
-            console.log('drag end card item');
-            return;
-        }
-
         const { active, over } = event;
 
         if (!over) return;
-        if (active.id === over.id) return;
 
-        const oldIndex = orderedColumns.findIndex((item) => item._id === active.id);
-        const newIndex = orderedColumns.findIndex((item) => item._id === over.id);
-        const newOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex);
+        if (activeDragItemType === 'card') {
+            const {
+                id: activeCardId,
+                data: { current: activeCardData },
+                rect: { current: activeRect },
+            } = active;
+            const { id: overCardId, rect: overRect } = over;
+            const activeColumn = findColumnByCardId(activeCardId as string, orderedColumns);
+            const overColumn = findColumnByCardId(overCardId as string, orderedColumns);
 
-        setOrderedColumns(newOrderedColumns);
+            if (!activeColumn || !overColumn) return;
+
+            if (oldColumnWhenDraggingCard?._id !== overColumn._id) {
+                console.log('difference columns');
+            } else {
+                const oldCardIndex = oldColumnWhenDraggingCard.cards.findIndex((item) => item._id === activeDragItemId);
+                const newCardIndex = overColumn.cards.findIndex((item) => item._id === overCardId);
+                const newOrderedCards = arrayMove(oldColumnWhenDraggingCard.cards, oldCardIndex, newCardIndex);
+                console.log('newOrderedCards:', newOrderedCards);
+
+                setOrderedColumns((prev) => {
+                    const nextColumns = cloneDeep(prev);
+                    const targetColumn = nextColumns.find((item) => item._id === overColumn._id);
+
+                    if (!targetColumn) return nextColumns;
+
+                    targetColumn.cards = newOrderedCards;
+                    targetColumn.cardOrderIds = newOrderedCards.map((item) => item._id);
+                    console.log('targetColumn:', targetColumn);
+
+                    return nextColumns;
+                });
+            }
+        }
+
+        if (activeDragItemType === 'column' && active.id !== over.id) {
+            const oldColumnIndex = orderedColumns.findIndex((item) => item._id === active.id);
+            const newColumnIndex = orderedColumns.findIndex((item) => item._id === over.id);
+            const newOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex);
+            setOrderedColumns(newOrderedColumns);
+            // handle API
+            // const newColumnOrderIds = newOrderedColumns.map((item) => item._id);
+            // console.log('handleDragEnd::', newColumnOrderIds);
+        }
+
         setActiveDragItemId(null);
         setActiveDragItemType(null);
         setActiveDragItemData(null);
-
-        // handle API
-        // const newColumnOrderIds = newOrderedColumns.map((item) => item._id);
-        // console.log('handleDragEnd::', newColumnOrderIds);
+        setOldColumnWhenDraggingCard(null);
     };
 
     return (
