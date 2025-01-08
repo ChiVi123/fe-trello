@@ -74,15 +74,14 @@ function DashboardPage() {
                 return closestCorners({ ...args });
             }
             const pointerIntersections = pointerWithin(args);
-
             if (!pointerIntersections?.length) return [];
 
-            let overId = getFirstCollision(pointerIntersections, 'id');
+            // console.log('collisionDetectionStrategy::', pointerIntersections);
 
+            let overId = getFirstCollision(pointerIntersections, 'id');
             if (!overId) return lastOverId.current ? [{ id: lastOverId.current }] : [];
 
             const checkColumn = orderedColumns.find((item) => item._id === overId);
-
             if (checkColumn) {
                 overId = closestCorners({
                     ...args,
@@ -91,6 +90,8 @@ function DashboardPage() {
                     ),
                 })[0]?.id;
             }
+
+            // console.log('collisionDetectionStrategy::', overId);
 
             lastOverId.current = overId;
             return [{ id: overId }];
@@ -167,7 +168,6 @@ function DashboardPage() {
         if (activeDragItemType === 'column') return;
 
         const { active, over } = event;
-
         if (!over) return;
 
         const {
@@ -177,6 +177,9 @@ function DashboardPage() {
         const { id: overCardId } = over;
         const activeColumn = findColumnByCardId(activeDraggingCardId as string, orderedColumns);
         const overColumn = findColumnByCardId(overCardId as string, orderedColumns);
+
+        // console.log('handleDragOver::', overCardId);
+        // console.log('handleDragOver::', activeColumn?._id, overColumn?._id);
 
         if (!activeColumn || !overColumn) return;
         if (activeColumn._id === overColumn._id) return;
@@ -225,7 +228,6 @@ function DashboardPage() {
                 setOrderedColumns((prev) => {
                     const nextColumns = cloneDeep(prev);
                     const targetColumn = nextColumns.find((item) => item._id === overColumn._id);
-
                     if (!targetColumn) return nextColumns;
 
                     targetColumn.cards = newOrderedCards;
