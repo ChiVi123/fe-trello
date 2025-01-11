@@ -10,6 +10,7 @@ export default defineConfig({
             { find: '~config', replacement: '/src/config' },
             { find: '~core', replacement: '/src/core' },
             { find: '~layouts', replacement: '/src/layouts' },
+            { find: '~libs', replacement: '/src/libs' },
             { find: '~modules', replacement: '/src/modules' },
             { find: '~components', replacement: '/src/shared/components' },
             { find: '~icon', replacement: '/src/shared/assets/icon' },

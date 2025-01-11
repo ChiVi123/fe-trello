@@ -10,10 +10,8 @@ import {
     DragStartEvent,
     DropAnimation,
     getFirstCollision,
-    MouseSensor,
     Over,
     pointerWithin,
-    TouchSensor,
     UniqueIdentifier,
     useSensor,
     useSensors,
@@ -21,6 +19,7 @@ import {
 import { arrayMove } from '@dnd-kit/sortable';
 import { cloneDeep, isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { MouseSensor, TouchSensor } from '~libs/dnd-kit-sensors';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
 import { generatePlaceholderCard } from '~utils/formatters';
