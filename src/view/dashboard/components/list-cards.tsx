@@ -21,6 +21,7 @@ function ListCards({ data }: IProps) {
                     ${trello.columnFooterHeight}
                 )`,
                 px: '5px',
+                pb: '5px',
                 mx: '5px',
                 overflowX: 'hidden',
                 overflowY: 'auto',

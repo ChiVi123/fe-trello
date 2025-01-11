@@ -36,11 +36,13 @@ function Card({ data }: IProps) {
             {...attributes}
             {...listeners}
             sx={{
-                boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-                overflow: 'unset',
                 display: data?.FE_PlaceholderCard ? 'none' : 'block',
                 // height: data?.FE_PlaceholderCard ? '0px': 'unset',
+                border: '1px solid transparent',
+                boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
+                overflow: 'unset',
                 // overflow: data?.FE_PlaceholderCard ? 'hidden': 'unset',
+                '&:hover': { borderColor: 'primary.main' },
             }}
         >
             {data.cover && <CardMedia sx={{ height: 140 }} image={data.cover} title={data.title} />}
