@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import { IColumnEntity } from '~modules/column/entity';
 import Column from './column';
 
@@ -19,7 +20,10 @@ function ListColumns({ columns }: IProps) {
     const toggleNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
 
     const handleAddColumn = async () => {
-        // console.log(inputRef.current!.value);
+        if (!inputRef.current!.value) {
+            toast.error('Please enter column title!!!', { position: 'bottom-left' });
+            return;
+        }
 
         toggleNewColumnForm();
     };
