@@ -1,14 +1,20 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { ReactNode } from 'react';
+import { IBoardEntity } from '~modules/board/entity';
 import AppBar from './components/app-bar';
 import BoardBar from './components/board-bar';
 
-function BoardBarLayout({ children }: { children: ReactNode }) {
+interface IProps {
+    board: IBoardEntity | undefined;
+    children: ReactNode;
+}
+
+function BoardBarLayout({ board, children }: IProps) {
     return (
         <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
             <AppBar />
-            <BoardBar />
+            <BoardBar board={board} />
 
             <Box
                 sx={{
