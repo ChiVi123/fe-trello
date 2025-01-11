@@ -18,10 +18,7 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import { arrayMove, horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { arrayMove } from '@dnd-kit/sortable';
 import { cloneDeep, isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ICardEntity } from '~modules/card/entity';
@@ -30,6 +27,7 @@ import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
 import Card from './components/card';
 import Column from './components/column';
+import ListColumns from './components/list-columns';
 
 type ActiveDragItemType = 'column' | 'card';
 type MoveCardToAnotherColumnParams = {
@@ -267,56 +265,14 @@ function DashboardPage({ columnOrderIds, columns }: IProps) {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <Box
-                sx={{
-                    display: 'flex',
-                    width: '100%',
-                    height: '100%',
-                    bgcolor: 'inherit',
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    '&::-webkit-scrollbar-track': { m: 2 },
-                }}
-            >
-                <SortableContext
-                    items={orderedColumns.map((item) => item._id)}
-                    strategy={horizontalListSortingStrategy}
-                >
-                    {orderedColumns.map((item) => (
-                        <Column key={item._id} data={item} />
-                    ))}
+            <ListColumns columns={orderedColumns} />
 
-                    <DragOverlay dropAnimation={customDropAnimation}>
-                        {!activeDragItemData && null}
+            <DragOverlay dropAnimation={customDropAnimation}>
+                {!activeDragItemData && null}
 
-                        {activeDragItemData && checkDragItemCard(activeDragItemData) && (
-                            <Card data={activeDragItemData} />
-                        )}
-                        {activeDragItemData && !checkDragItemCard(activeDragItemData) && (
-                            <Column data={activeDragItemData} />
-                        )}
-                    </DragOverlay>
-                </SortableContext>
-
-                <Box
-                    sx={{
-                        minWidth: '200px',
-                        maxWidth: '200px',
-                        height: 'fit-content',
-                        mx: 2,
-                        borderRadius: '6px',
-                        bgcolor: '#ffffff3d',
-                    }}
-                >
-                    <Button
-                        fullWidth
-                        startIcon={<NoteAddIcon />}
-                        sx={{ justifyContent: 'flex-start', pl: 2.5, py: 1, color: 'white' }}
-                    >
-                        Add new column
-                    </Button>
-                </Box>
-            </Box>
+                {activeDragItemData && checkDragItemCard(activeDragItemData) && <Card data={activeDragItemData} />}
+                {activeDragItemData && !checkDragItemCard(activeDragItemData) && <Column data={activeDragItemData} />}
+            </DragOverlay>
         </DndContext>
     );
 }

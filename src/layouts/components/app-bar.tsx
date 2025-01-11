@@ -74,11 +74,13 @@ function AppBar() {
                                 </InputAdornment>
                             ),
                             endAdornment: (
-                                <CloseIcon
-                                    fontSize='small'
-                                    sx={{ color: search ? 'white' : 'transparent', cursor: 'pointer' }}
-                                    onClick={() => setSearch('')}
-                                />
+                                <InputAdornment position='end'>
+                                    <CloseIcon
+                                        fontSize='small'
+                                        sx={{ color: search ? 'white' : 'transparent', cursor: 'pointer' }}
+                                        onClick={() => setSearch('')}
+                                    />
+                                </InputAdornment>
                             ),
                         },
                     }}
@@ -91,7 +93,7 @@ function AppBar() {
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': { borderColor: 'white' },
                             '&:hover fieldset': { borderColor: 'white' },
-                            '&.Mui-focused  fieldset': { borderColor: 'white' },
+                            '&.Mui-focused fieldset': { borderColor: 'white' },
                         },
                     }}
                     onChange={(e) => setSearch(e.target.value)}
