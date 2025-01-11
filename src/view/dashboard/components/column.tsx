@@ -20,6 +20,7 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { CSSProperties, MouseEventHandler, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import { IColumnEntity } from '~modules/column/entity';
 import { mapOrder } from '~utils/sorts';
 import ListCards from './list-cards';
@@ -56,7 +57,10 @@ function Column({ data }: IProps) {
         setAnchorEl(null);
     };
     const handleAddCard = async () => {
-        // console.log(inputRef.current!.value);
+        if (!inputRef.current!.value) {
+            toast.error('Please enter card title!!!');
+            return;
+        }
 
         toggleNewCardForm();
     };
