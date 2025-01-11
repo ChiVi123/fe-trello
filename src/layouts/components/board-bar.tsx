@@ -10,8 +10,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-import { mockData } from '~modules/mock-data';
+import { IBoardEntity } from '~modules/board/entity';
 import { capitalizeFirstLetter } from '~utils/formatters';
+
+interface IProps {
+    board: IBoardEntity | undefined;
+}
 
 const MENU_STYLE = {
     px: '5px',
@@ -23,8 +27,7 @@ const MENU_STYLE = {
     '&:hover': { bgcolor: 'primary.50' },
 };
 
-function BoardBar() {
-    const { board } = mockData;
+function BoardBar({ board }: IProps) {
     return (
         <Box
             px={2}
@@ -39,9 +42,11 @@ function BoardBar() {
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Chip label={board.title} icon={<DashboardIcon />} clickable sx={MENU_STYLE} />
+                <Tooltip title={board?.description}>
+                    <Chip label={board?.title} icon={<DashboardIcon />} clickable sx={MENU_STYLE} />
+                </Tooltip>
 
-                <Chip label={capitalizeFirstLetter(board.type)} icon={<VpnLockIcon />} clickable sx={MENU_STYLE} />
+                <Chip label={capitalizeFirstLetter(board?.type)} icon={<VpnLockIcon />} clickable sx={MENU_STYLE} />
 
                 <Chip label='Add to Google Drive' icon={<AddToDriveIcon />} clickable sx={MENU_STYLE} />
 
@@ -76,72 +81,72 @@ function BoardBar() {
                         },
                     }}
                 >
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Isabelle Beulah'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Isabelle Beulah'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f4/f4f4575e3cd474113b339ae746204f7fa557ece6_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Vera Wayne'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Vera Wayne'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f4/f4fa1a998b3638f6b0fb86f995bbae6077e3779e_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Marc Dorothy'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Marc Dorothy'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f5/f505d3519bf5a04323b108388b1abce1371b5118_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Corey Harold'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Corey Harold'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f5/f559572c356ae9554890eceb701670f15b90fbe6_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Joseph Estella'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Joseph Estella'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c3b9d16542836cc329f1ab3d66ce16bd27ab8fbf_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Patrick Bess'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Patrick Bess'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c3919cb81904f52777705e8aaac9fa8629a082f7_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Nicholas Troy'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Nicholas Troy'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c39115cafcce96493b908445babad3ba65214b34_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Bernard Jon'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Bernard Jon'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c39115cafcce96493b908445babad3ba65214b34_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Barry Marcus'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Barry Marcus'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c39115cafcce96493b908445babad3ba65214b34_full.jpg'
                         />
                     </Tooltip>
 
-                    <Tooltip title='Remy Sharp'>
+                    <Tooltip title='Madge Lois'>
                         <Avatar
-                            alt='Remy Sharp'
+                            alt='Madge Lois'
                             src='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/c3/c39115cafcce96493b908445babad3ba65214b34_full.jpg'
                         />
                     </Tooltip>

@@ -26,7 +26,6 @@ import { cloneDeep, isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
-import { mockData } from '~modules/mock-data';
 import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
 import Card from './components/card';
@@ -43,16 +42,18 @@ type MoveCardToAnotherColumnParams = {
     overColumn: IColumnEntity;
 };
 
+interface IProps {
+    columnOrderIds: string[] | undefined;
+    columns: IColumnEntity[] | undefined;
+}
+
 const checkDragItemCard = (value: Record<string, unknown>): value is ICardEntity => 'columnId' in value;
 const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage() {
-    const {
-        board: { columnOrderIds, columns },
-    } = mockData;
-    const [orderedColumns, setOrderedColumns] = useState<typeof columns>([]);
+function DashboardPage({ columnOrderIds, columns }: IProps) {
+    const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
     const [activeDragItemData, setActiveDragItemData] = useState<IColumnEntity | ICardEntity | null>(null);
@@ -148,7 +149,9 @@ function DashboardPage() {
     };
 
     useEffect(() => {
-        setOrderedColumns(mapOrder(columns, columnOrderIds, '_id'));
+        if (columnOrderIds && columns) {
+            setOrderedColumns(mapOrder(columns, columnOrderIds, '_id'));
+        }
     }, [columnOrderIds, columns]);
 
     const handleDragStart = (event: DragStartEvent) => {
