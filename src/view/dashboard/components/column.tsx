@@ -164,7 +164,7 @@ function Column({ data }: IProps) {
                     }}
                 >
                     {openNewCardForm ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
+                        <Box data-no-dnd='true' sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
                             <TextField
                                 inputRef={inputRef}
                                 id='card-title'
@@ -222,7 +222,9 @@ function Column({ data }: IProps) {
                             }}
                             onClick={toggleNewCardForm}
                         >
-                            <Button startIcon={<AddCardIcon />}>Add new card</Button>
+                            <Button data-no-dnd='true' startIcon={<AddCardIcon />}>
+                                Add new card
+                            </Button>
 
                             <Tooltip title='Drag to move'>
                                 <DragHandleIcon sx={{ cursor: 'pointer' }} />
