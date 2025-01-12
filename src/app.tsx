@@ -1,10 +1,12 @@
 import clonedDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { IBoardEntity } from '~modules/board/entity';
 import { getBoardDetailAPI } from '~modules/board/repository';
 import { createCardAPI } from '~modules/card/repository';
 import { createColumnAPI } from '~modules/column/repository';
+import { generatePlaceholderCard } from '~utils/formatters';
 import DashboardPage from '~view/dashboard/page';
 
 function App() {
@@ -12,6 +14,13 @@ function App() {
 
     useEffect(() => {
         getBoardDetailAPI('678278ca7a7569d4837fabe5').then((data) => {
+            data.columns.forEach((item) => {
+                if (isEmpty(item.cards)) {
+                    const placeholder = generatePlaceholderCard(item);
+                    item.cards = [placeholder];
+                    item.cardOrderIds = [placeholder._id];
+                }
+            });
             setBoard(data);
         });
     }, []);
@@ -21,7 +30,10 @@ function App() {
 
         const createdColumn = await createColumnAPI({ title, boardId: board?._id });
         const clonedBoard = clonedDeep(board);
+        const placeholder = generatePlaceholderCard(createdColumn);
 
+        createdColumn.cards = [placeholder];
+        createdColumn.cardOrderIds = [placeholder._id];
         clonedBoard.columnOrderIds.push(createdColumn._id);
         clonedBoard.columns.push(createdColumn);
 

@@ -17,7 +17,8 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { cloneDeep, isEmpty } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MouseSensor, TouchSensor } from '~libs/dnd-kit-sensors';
 import { ICardEntity } from '~modules/card/entity';
