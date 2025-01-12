@@ -11,9 +11,11 @@ import Column from './column';
 
 interface IProps {
     columns: IColumnEntity[];
+    onAddColumn?(value: string): Promise<void>;
+    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
 }
 
-function ListColumns({ columns }: IProps) {
+function ListColumns({ columns, onAddColumn, onAddCard }: IProps) {
     const [openNewColumnForm, setOpenNewColumnForm] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -23,6 +25,10 @@ function ListColumns({ columns }: IProps) {
         if (!inputRef.current!.value) {
             toast.error('Please enter column title!!!', { position: 'bottom-left' });
             return;
+        }
+
+        if (onAddColumn) {
+            await onAddColumn(inputRef.current!.value);
         }
 
         toggleNewColumnForm();
@@ -42,7 +48,7 @@ function ListColumns({ columns }: IProps) {
         >
             <SortableContext items={columns.map((item) => item._id)} strategy={horizontalListSortingStrategy}>
                 {columns.map((item) => (
-                    <Column key={item._id} data={item} />
+                    <Column key={item._id} data={item} onAddCard={onAddCard} />
                 ))}
             </SortableContext>
 
