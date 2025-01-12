@@ -27,9 +27,10 @@ import ListCards from './list-cards';
 
 interface IProps {
     data: IColumnEntity;
+    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
 }
 
-function Column({ data }: IProps) {
+function Column({ data, onAddCard }: IProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: data._id,
         data: { ...data },
@@ -60,6 +61,10 @@ function Column({ data }: IProps) {
         if (!inputRef.current!.value) {
             toast.error('Please enter card title!!!');
             return;
+        }
+
+        if (onAddCard) {
+            await onAddCard({ title: inputRef.current!.value, columnId: data._id });
         }
 
         toggleNewCardForm();

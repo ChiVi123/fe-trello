@@ -17,7 +17,8 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { cloneDeep, isEmpty } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MouseSensor, TouchSensor } from '~libs/dnd-kit-sensors';
 import { ICardEntity } from '~modules/card/entity';
@@ -42,6 +43,8 @@ type MoveCardToAnotherColumnParams = {
 interface IProps {
     columnOrderIds: string[] | undefined;
     columns: IColumnEntity[] | undefined;
+    onAddColumn?(value: string): Promise<void>;
+    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
 }
 
 const checkDragItemCard = (value: Record<string, unknown>): value is ICardEntity => 'columnId' in value;
@@ -49,7 +52,7 @@ const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({ columnOrderIds, columns }: IProps) {
+function DashboardPage({ columnOrderIds, columns, onAddColumn, onAddCard }: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -264,7 +267,7 @@ function DashboardPage({ columnOrderIds, columns }: IProps) {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <ListColumns columns={orderedColumns} />
+            <ListColumns columns={orderedColumns} onAddColumn={onAddColumn} onAddCard={onAddCard} />
 
             <DragOverlay dropAnimation={customDropAnimation}>
                 {!activeDragItemData && null}
