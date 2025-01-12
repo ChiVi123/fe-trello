@@ -1,3 +1,4 @@
+import clonedDeep from 'lodash/cloneDeep';
 import { useEffect, useState } from 'react';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { IBoardEntity } from '~modules/board/entity';
@@ -16,17 +17,30 @@ function App() {
     }, []);
 
     const handleAddColumn = async (title: string) => {
-        const createdColumn = await createColumnAPI({ title, boardId: board?._id });
-        console.log('createdColumn::', createdColumn);
+        if (!board) return;
 
-        // update board
+        const createdColumn = await createColumnAPI({ title, boardId: board?._id });
+        const clonedBoard = clonedDeep(board);
+
+        clonedBoard.columnOrderIds.push(createdColumn._id);
+        clonedBoard.columns.push(createdColumn);
+
+        setBoard(clonedBoard);
     };
 
     const handleAddCard = async (data: { title: string; columnId: string }) => {
-        const createdCard = await createCardAPI({ ...data, boardId: board?._id });
-        console.log('createdCard::', createdCard);
+        if (!board) return;
 
-        // update board
+        const createdCard = await createCardAPI({ ...data, boardId: board?._id });
+        const clonedBoard = clonedDeep(board);
+
+        const columnTarget = clonedBoard.columns.find((item) => item._id === data.columnId);
+        if (!columnTarget) return;
+
+        columnTarget.cardOrderIds.push(createdCard._id);
+        columnTarget.cards.push(createdCard);
+
+        setBoard(clonedBoard);
     };
 
     return (
