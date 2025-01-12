@@ -44,6 +44,7 @@ interface IProps {
     columnOrderIds: string[] | undefined;
     columns: IColumnEntity[] | undefined;
     onAddColumn?(value: string): Promise<void>;
+    onMoveColumn?(value: IColumnEntity[]): Promise<void>;
     onAddCard?(value: { title: string; columnId: string }): Promise<void>;
 }
 
@@ -52,7 +53,7 @@ const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({ columnOrderIds, columns, onAddColumn, onAddCard }: IProps) {
+function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onAddCard }: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -245,10 +246,10 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onAddCard }: IPro
             const oldColumnIndex = orderedColumns.findIndex((item) => item._id === active.id);
             const newColumnIndex = orderedColumns.findIndex((item) => item._id === over.id);
             const newOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex);
+
+            onMoveColumn?.(newOrderedColumns);
+
             setOrderedColumns(newOrderedColumns);
-            // handle API
-            // const newColumnOrderIds = newOrderedColumns.map((item) => item._id);
-            // console.log('handleDragEnd::', newColumnOrderIds);
         }
 
         setActiveDragItemId(null);

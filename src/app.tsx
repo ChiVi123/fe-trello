@@ -3,8 +3,9 @@ import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { IBoardEntity } from '~modules/board/entity';
-import { getBoardDetailAPI } from '~modules/board/repository';
+import { getBoardDetailAPI, updateBoardDetailAPI } from '~modules/board/repository';
 import { createCardAPI } from '~modules/card/repository';
+import { IColumnEntity } from '~modules/column/entity';
 import { createColumnAPI } from '~modules/column/repository';
 import { generatePlaceholderCard } from '~utils/formatters';
 import DashboardPage from '~view/dashboard/page';
@@ -55,12 +56,24 @@ function App() {
         setBoard(clonedBoard);
     };
 
+    const handleMoveColumn = async (newOrderedColumns: IColumnEntity[]) => {
+        if (!board) return;
+        const newColumnOrderIds = newOrderedColumns.map((item) => item._id);
+        const clonedBoard = clonedDeep(board);
+        clonedBoard.columnOrderIds = newColumnOrderIds;
+        clonedBoard.columns = newOrderedColumns;
+        setBoard(clonedBoard);
+
+        await updateBoardDetailAPI(clonedBoard._id, { columnOrderIds: newColumnOrderIds });
+    };
+
     return (
         <BoardBarLayout board={board}>
             <DashboardPage
                 columnOrderIds={board?.columnOrderIds}
                 columns={board?.columns}
                 onAddColumn={handleAddColumn}
+                onMoveColumn={handleMoveColumn}
                 onAddCard={handleAddCard}
             />
         </BoardBarLayout>
