@@ -54,8 +54,13 @@ function App() {
         const columnTarget = clonedBoard.columns.find((item) => item._id === data.columnId);
         if (!columnTarget) return;
 
-        columnTarget.cardOrderIds.push(createdCard._id);
-        columnTarget.cards.push(createdCard);
+        if (columnTarget.cards.some((item) => item.FE_PlaceholderCard)) {
+            columnTarget.cardOrderIds = [createdCard._id];
+            columnTarget.cards = [createdCard];
+        } else {
+            columnTarget.cardOrderIds.push(createdCard._id);
+            columnTarget.cards.push(createdCard);
+        }
 
         setBoard(clonedBoard);
     };
@@ -95,10 +100,13 @@ function App() {
         clonedBoard.columns = orderedColumns;
         setBoard(clonedBoard);
 
+        let prevCardOrderIds = orderedColumns.find((item) => item._id === prevColumnId)!.cardOrderIds;
+        if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = [];
+
         moveCardAnotherColumnAPI({
             currentCardId,
             prevColumnId,
-            prevCardOrderIds: orderedColumns.find((item) => item._id === prevColumnId)?.cardOrderIds,
+            prevCardOrderIds,
             nextColumnId,
             nextCardOrderIds: orderedColumns.find((item) => item._id === nextColumnId)?.cardOrderIds,
         });
