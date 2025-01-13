@@ -1,13 +1,14 @@
 import clonedDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { IBoardEntity } from '~modules/board/entity';
 import { getBoardDetailAPI, moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
 import { ICardEntity } from '~modules/card/entity';
 import { createCardAPI } from '~modules/card/repository';
 import { IColumnEntity } from '~modules/column/entity';
-import { createColumnAPI, updateColumnDetailAPI } from '~modules/column/repository';
+import { createColumnAPI, deleteColumnAPI, updateColumnDetailAPI } from '~modules/column/repository';
 import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
 import DashboardPage from '~view/dashboard/page';
@@ -111,6 +112,17 @@ function App() {
             nextCardOrderIds: orderedColumns.find((item) => item._id === nextColumnId)?.cardOrderIds,
         });
     };
+    const handleDeleteColumn = (id: string) => {
+        if (!board) return;
+        const clonedBoard = clonedDeep(board);
+        clonedBoard.columns = clonedBoard.columns.filter((item) => item._id !== id);
+        clonedBoard.columnOrderIds = clonedBoard.columnOrderIds.filter((_id) => _id !== id);
+        setBoard(clonedBoard);
+
+        deleteColumnAPI(id).then((res) => {
+            toast.success(res?.deleteResult, { position: 'bottom-left' });
+        });
+    };
 
     return (
         <BoardBarLayout board={board}>
@@ -121,6 +133,7 @@ function App() {
                 onAddCard={handleAddCard}
                 onMoveCardInSameColumn={handleMoveCardInSameColumn}
                 onMoveCardAnotherColumn={handleMoveCardAnotherColumn}
+                onDeleteColumn={handleDeleteColumn}
             />
         </BoardBarLayout>
     );

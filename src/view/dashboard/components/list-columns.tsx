@@ -13,9 +13,10 @@ interface IProps {
     columns: IColumnEntity[];
     onAddColumn?(value: string): void;
     onAddCard?(value: { title: string; columnId: string }): void;
+    onDeleteColumn?(columnId: string): void;
 }
 
-function ListColumns({ columns, onAddColumn, onAddCard }: IProps) {
+function ListColumns({ columns, onAddColumn, onAddCard, onDeleteColumn }: IProps) {
     const [openNewColumnForm, setOpenNewColumnForm] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -45,7 +46,7 @@ function ListColumns({ columns, onAddColumn, onAddCard }: IProps) {
         >
             <SortableContext items={columns.map((item) => item._id)} strategy={horizontalListSortingStrategy}>
                 {columns.map((item) => (
-                    <Column key={item._id} data={item} onAddCard={onAddCard} />
+                    <Column key={item._id} data={item} onAddCard={onAddCard} onDeleteColumn={onDeleteColumn} />
                 ))}
             </SortableContext>
 

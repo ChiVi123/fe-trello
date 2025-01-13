@@ -7,3 +7,6 @@ export const createColumnAPI = async (data: Record<string, unknown>) => {
 export const updateColumnDetailAPI = async (id: string, updateData: Record<string, unknown>) => {
     return (await http.put(`v1/columns/${id}`, updateData)).data;
 };
+export const deleteColumnAPI = async (id: string) => {
+    return (await http.delete(`v1/columns/${id}`)).data;
+};
