@@ -28,6 +28,20 @@ import Card from './components/card';
 import Column from './components/column';
 import ListColumns from './components/list-columns';
 
+interface IProps {
+    columns: IColumnEntity[] | undefined;
+    onAddColumn?(value: string): void;
+    onMoveColumn?(value: IColumnEntity[]): void;
+    onAddCard?(value: { title: string; columnId: string }): void;
+    onMoveCardInSameColumn?(columnId: string, cards: ICardEntity[], cardIds: string[]): void;
+    onMoveCardAnotherColumn?(
+        currentCardId: string,
+        prevColumnId: string,
+        nextColumnId: string,
+        orderedColumns: IColumnEntity[]
+    ): void;
+}
+
 type ActiveDragItemType = 'column' | 'card';
 type MoveCardToAnotherColumnParams = {
     active: Active;
@@ -37,22 +51,22 @@ type MoveCardToAnotherColumnParams = {
     activeColumn: IColumnEntity;
     overCardId: UniqueIdentifier;
     overColumn: IColumnEntity;
+    isDragEnd?: boolean;
 };
-
-interface IProps {
-    columns: IColumnEntity[] | undefined;
-    onAddColumn?(value: string): void;
-    onMoveColumn?(value: IColumnEntity[]): void;
-    onAddCard?(value: { title: string; columnId: string }): void;
-    onMoveCardInSameColumn?(columnId: string, cards: ICardEntity[], cardIds: string[]): void;
-}
 
 const checkDragItemCard = (value: Record<string, unknown>): value is ICardEntity => 'columnId' in value;
 const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({ columns, onAddColumn, onMoveColumn, onAddCard, onMoveCardInSameColumn }: IProps) {
+function DashboardPage({
+    columns,
+    onAddColumn,
+    onMoveColumn,
+    onAddCard,
+    onMoveCardInSameColumn,
+    onMoveCardAnotherColumn,
+}: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -116,6 +130,7 @@ function DashboardPage({ columns, onAddColumn, onMoveColumn, onAddCard, onMoveCa
         activeColumn,
         overCardId,
         overColumn,
+        isDragEnd,
     }: MoveCardToAnotherColumnParams) => {
         const overCardIndex = overColumn.cards.findIndex((item) => item._id === overCardId);
         const isBelowOverItem = activeRect.translated && activeRect.translated.top > overRect.top + overRect.height;
@@ -144,6 +159,16 @@ function DashboardPage({ columns, onAddColumn, onMoveColumn, onAddCard, onMoveCa
                 nextOverColumn.cards = nextOverColumn.cards.filter((item) => !item?.FE_PlaceholderCard);
                 nextOverColumn.cardOrderIds = nextOverColumn.cards.map((item) => item._id);
             }
+
+            if (isDragEnd && oldColumnWhenDraggingCard && nextOverColumn) {
+                onMoveCardAnotherColumn?.(
+                    String(activeCardId),
+                    oldColumnWhenDraggingCard._id,
+                    nextOverColumn._id,
+                    nextColumns
+                );
+            }
+
             return nextColumns;
         });
     };
@@ -222,6 +247,7 @@ function DashboardPage({ columns, onAddColumn, onMoveColumn, onAddCard, onMoveCa
                     activeColumn,
                     overCardId,
                     overColumn,
+                    isDragEnd: true,
                 });
             } else {
                 const oldCardIndex = oldColumnWhenDraggingCard.cards.findIndex((item) => item._id === activeDragItemId);

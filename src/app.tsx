@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { IBoardEntity } from '~modules/board/entity';
-import { getBoardDetailAPI, updateBoardDetailAPI } from '~modules/board/repository';
+import { getBoardDetailAPI, moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
 import { ICardEntity } from '~modules/card/entity';
 import { createCardAPI } from '~modules/card/repository';
 import { IColumnEntity } from '~modules/column/entity';
@@ -82,6 +82,27 @@ function App() {
 
         updateColumnDetailAPI(columnId, { cardOrderIds });
     };
+    const handleMoveCardAnotherColumn = async (
+        currentCardId: string,
+        prevColumnId: string,
+        nextColumnId: string,
+        orderedColumns: IColumnEntity[]
+    ) => {
+        if (!board) return;
+        const newColumnOrderIds = orderedColumns.map((item) => item._id);
+        const clonedBoard = clonedDeep(board);
+        clonedBoard.columnOrderIds = newColumnOrderIds;
+        clonedBoard.columns = orderedColumns;
+        setBoard(clonedBoard);
+
+        moveCardAnotherColumnAPI({
+            currentCardId,
+            prevColumnId,
+            prevCardOrderIds: orderedColumns.find((item) => item._id === prevColumnId)?.cardOrderIds,
+            nextColumnId,
+            nextCardOrderIds: orderedColumns.find((item) => item._id === nextColumnId)?.cardOrderIds,
+        });
+    };
 
     return (
         <BoardBarLayout board={board}>
@@ -91,6 +112,7 @@ function App() {
                 onMoveColumn={handleMoveColumn}
                 onAddCard={handleAddCard}
                 onMoveCardInSameColumn={handleMoveCardInSameColumn}
+                onMoveCardAnotherColumn={handleMoveCardAnotherColumn}
             />
         </BoardBarLayout>
     );
