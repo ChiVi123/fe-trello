@@ -19,6 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useConfirm } from 'material-ui-confirm';
 import { CSSProperties, MouseEventHandler, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IColumnEntity } from '~modules/column/entity';
@@ -27,9 +28,10 @@ import ListCards from './list-cards';
 interface IProps {
     data: IColumnEntity;
     onAddCard?(value: { title: string; columnId: string }): void;
+    onDeleteColumn?(columnId: string): void;
 }
 
-function Column({ data, onAddCard }: IProps) {
+function Column({ data, onAddCard, onDeleteColumn }: IProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: data._id,
         data: { ...data },
@@ -38,6 +40,7 @@ function Column({ data, onAddCard }: IProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [openNewCardForm, setOpenNewCardForm] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const confirmDeleteColumn = useConfirm();
 
     const open = Boolean(anchorEl);
     const dndKitColumnStyles: CSSProperties = {
@@ -64,6 +67,17 @@ function Column({ data, onAddCard }: IProps) {
 
         onAddCard?.({ title: inputRef.current!.value, columnId: data._id });
         toggleNewCardForm();
+    };
+    const handleDeleteColumn = () => {
+        confirmDeleteColumn({
+            title: 'Delete Column?',
+            description: 'This action will permanently delete your Column and its Cards! Are you sure?',
+            confirmationText: 'Confirm',
+        })
+            .then(() => {
+                onDeleteColumn?.(data._id);
+            })
+            .catch(() => {});
     };
 
     return (
@@ -112,12 +126,21 @@ function Column({ data, onAddCard }: IProps) {
                             id='menu-column-dropdown'
                             anchorEl={anchorEl}
                             open={open}
+                            onClick={handleClose}
                             onClose={handleClose}
                             MenuListProps={{
                                 'aria-labelledby': 'column-dropdown-top-bar',
                             }}
                         >
-                            <MenuItem>
+                            <MenuItem
+                                sx={{
+                                    '&:hover': {
+                                        color: 'success.light',
+                                        '& .MuiListItemIcon-root': { color: 'success.light' },
+                                    },
+                                }}
+                                onClick={toggleNewCardForm}
+                            >
                                 <ListItemIcon>
                                     <AddCardIcon fontSize='small' />
                                 </ListItemIcon>
@@ -140,11 +163,19 @@ function Column({ data, onAddCard }: IProps) {
 
                             <Divider />
 
-                            <MenuItem>
+                            <MenuItem
+                                sx={{
+                                    '&:hover': {
+                                        color: 'warning.dark',
+                                        '& .MuiListItemIcon-root': { color: 'warning.dark' },
+                                    },
+                                }}
+                                onClick={handleDeleteColumn}
+                            >
                                 <ListItemIcon>
                                     <DeleteForeverIcon fontSize='small' />
                                 </ListItemIcon>
-                                <ListItemText>Remove this column</ListItemText>
+                                <ListItemText>Delete this column</ListItemText>
                             </MenuItem>
                             <MenuItem>
                                 <ListItemIcon>

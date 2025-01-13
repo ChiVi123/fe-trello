@@ -40,6 +40,7 @@ interface IProps {
         nextColumnId: string,
         orderedColumns: IColumnEntity[]
     ): void;
+    onDeleteColumn?(columnId: string): void;
 }
 
 type ActiveDragItemType = 'column' | 'card';
@@ -66,6 +67,7 @@ function DashboardPage({
     onAddCard,
     onMoveCardInSameColumn,
     onMoveCardAnotherColumn,
+    onDeleteColumn,
 }: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
@@ -295,7 +297,12 @@ function DashboardPage({
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <ListColumns columns={orderedColumns} onAddColumn={onAddColumn} onAddCard={onAddCard} />
+            <ListColumns
+                columns={orderedColumns}
+                onAddColumn={onAddColumn}
+                onAddCard={onAddCard}
+                onDeleteColumn={onDeleteColumn}
+            />
 
             <DragOverlay dropAnimation={customDropAnimation}>
                 {!activeDragItemData && null}
