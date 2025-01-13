@@ -22,12 +22,11 @@ import Typography from '@mui/material/Typography';
 import { CSSProperties, MouseEventHandler, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IColumnEntity } from '~modules/column/entity';
-import { mapOrder } from '~utils/sorts';
 import ListCards from './list-cards';
 
 interface IProps {
     data: IColumnEntity;
-    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
+    onAddCard?(value: { title: string; columnId: string }): void;
 }
 
 function Column({ data, onAddCard }: IProps) {
@@ -57,20 +56,15 @@ function Column({ data, onAddCard }: IProps) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleAddCard = async () => {
+    const handleAddCard = () => {
         if (!inputRef.current!.value) {
             toast.error('Please enter card title!!!');
             return;
         }
 
-        if (onAddCard) {
-            await onAddCard({ title: inputRef.current!.value, columnId: data._id });
-        }
-
+        onAddCard?.({ title: inputRef.current!.value, columnId: data._id });
         toggleNewCardForm();
     };
-
-    const orderedCards = mapOrder(data.cards, data.cardOrderIds, '_id');
 
     return (
         <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
@@ -163,7 +157,7 @@ function Column({ data, onAddCard }: IProps) {
                 </Box>
 
                 {/* List cards */}
-                <ListCards data={orderedCards} />
+                <ListCards data={data.cards} />
 
                 {/* Footer */}
                 <Box

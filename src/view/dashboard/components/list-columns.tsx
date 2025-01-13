@@ -11,8 +11,8 @@ import Column from './column';
 
 interface IProps {
     columns: IColumnEntity[];
-    onAddColumn?(value: string): Promise<void>;
-    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
+    onAddColumn?(value: string): void;
+    onAddCard?(value: { title: string; columnId: string }): void;
 }
 
 function ListColumns({ columns, onAddColumn, onAddCard }: IProps) {
@@ -21,16 +21,13 @@ function ListColumns({ columns, onAddColumn, onAddCard }: IProps) {
 
     const toggleNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
 
-    const handleAddColumn = async () => {
+    const handleAddColumn = () => {
         if (!inputRef.current!.value) {
             toast.error('Please enter column title!!!', { position: 'bottom-left' });
             return;
         }
 
-        if (onAddColumn) {
-            await onAddColumn(inputRef.current!.value);
-        }
-
+        onAddColumn?.(inputRef.current!.value);
         toggleNewColumnForm();
     };
 

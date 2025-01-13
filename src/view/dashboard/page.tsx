@@ -24,10 +24,23 @@ import { MouseSensor, TouchSensor } from '~libs/dnd-kit-sensors';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
 import { generatePlaceholderCard } from '~utils/formatters';
-import { mapOrder } from '~utils/sorts';
 import Card from './components/card';
 import Column from './components/column';
 import ListColumns from './components/list-columns';
+
+interface IProps {
+    columns: IColumnEntity[] | undefined;
+    onAddColumn?(value: string): void;
+    onMoveColumn?(value: IColumnEntity[]): void;
+    onAddCard?(value: { title: string; columnId: string }): void;
+    onMoveCardInSameColumn?(columnId: string, cards: ICardEntity[], cardIds: string[]): void;
+    onMoveCardAnotherColumn?(
+        currentCardId: string,
+        prevColumnId: string,
+        nextColumnId: string,
+        orderedColumns: IColumnEntity[]
+    ): void;
+}
 
 type ActiveDragItemType = 'column' | 'card';
 type MoveCardToAnotherColumnParams = {
@@ -38,22 +51,22 @@ type MoveCardToAnotherColumnParams = {
     activeColumn: IColumnEntity;
     overCardId: UniqueIdentifier;
     overColumn: IColumnEntity;
+    isDragEnd?: boolean;
 };
-
-interface IProps {
-    columnOrderIds: string[] | undefined;
-    columns: IColumnEntity[] | undefined;
-    onAddColumn?(value: string): Promise<void>;
-    onMoveColumn?(value: IColumnEntity[]): Promise<void>;
-    onAddCard?(value: { title: string; columnId: string }): Promise<void>;
-}
 
 const checkDragItemCard = (value: Record<string, unknown>): value is ICardEntity => 'columnId' in value;
 const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onAddCard }: IProps) {
+function DashboardPage({
+    columns,
+    onAddColumn,
+    onMoveColumn,
+    onAddCard,
+    onMoveCardInSameColumn,
+    onMoveCardAnotherColumn,
+}: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -117,6 +130,7 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onA
         activeColumn,
         overCardId,
         overColumn,
+        isDragEnd,
     }: MoveCardToAnotherColumnParams) => {
         const overCardIndex = overColumn.cards.findIndex((item) => item._id === overCardId);
         const isBelowOverItem = activeRect.translated && activeRect.translated.top > overRect.top + overRect.height;
@@ -145,15 +159,25 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onA
                 nextOverColumn.cards = nextOverColumn.cards.filter((item) => !item?.FE_PlaceholderCard);
                 nextOverColumn.cardOrderIds = nextOverColumn.cards.map((item) => item._id);
             }
+
+            if (isDragEnd && oldColumnWhenDraggingCard && nextOverColumn) {
+                onMoveCardAnotherColumn?.(
+                    String(activeCardId),
+                    oldColumnWhenDraggingCard._id,
+                    nextOverColumn._id,
+                    nextColumns
+                );
+            }
+
             return nextColumns;
         });
     };
 
     useEffect(() => {
-        if (columnOrderIds && columns) {
-            setOrderedColumns(mapOrder(columns, columnOrderIds, '_id'));
+        if (columns) {
+            setOrderedColumns(columns);
         }
-    }, [columnOrderIds, columns]);
+    }, [columns]);
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -223,11 +247,13 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onA
                     activeColumn,
                     overCardId,
                     overColumn,
+                    isDragEnd: true,
                 });
             } else {
                 const oldCardIndex = oldColumnWhenDraggingCard.cards.findIndex((item) => item._id === activeDragItemId);
                 const newCardIndex = overColumn.cards.findIndex((item) => item._id === overCardId);
                 const newOrderedCards = arrayMove(oldColumnWhenDraggingCard.cards, oldCardIndex, newCardIndex);
+                const newOrderedCardIds = newOrderedCards.map((item) => item._id);
 
                 setOrderedColumns((prev) => {
                     const nextColumns = cloneDeep(prev);
@@ -235,10 +261,12 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onA
                     if (!targetColumn) return nextColumns;
 
                     targetColumn.cards = newOrderedCards;
-                    targetColumn.cardOrderIds = newOrderedCards.map((item) => item._id);
+                    targetColumn.cardOrderIds = newOrderedCardIds;
 
                     return nextColumns;
                 });
+
+                onMoveCardInSameColumn?.(oldColumnWhenDraggingCard._id, newOrderedCards, newOrderedCardIds);
             }
         }
 
@@ -248,7 +276,6 @@ function DashboardPage({ columnOrderIds, columns, onAddColumn, onMoveColumn, onA
             const newOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex);
 
             onMoveColumn?.(newOrderedColumns);
-
             setOrderedColumns(newOrderedColumns);
         }
 
