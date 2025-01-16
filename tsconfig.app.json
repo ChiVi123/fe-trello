@@ -29,9 +29,11 @@
             "~layouts/*": ["./src/layouts/*"],
             "~libs/*": ["./src/libs/*"],
             "~modules/*": ["./src/modules/*"],
-            "~components/*": ["./src/shared/components/*"],
+            "~routes": ["./src/routes/index.tsx"],
             "~icon/*": ["./src/shared/assets/icon/*"],
+            "~image/*": ["./src/shared/assets/image/*"],
             "~svg/*": ["./src/shared/assets/svg/*"],
+            "~components/*": ["./src/shared/components/*"],
             "~utils/*": ["./src/shared/utils/*"],
             "~view/*": ["./src/view/*"]
         }

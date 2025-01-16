@@ -1,9 +1,11 @@
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
-import { ReactNode } from 'react';
+import { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
 import AppBar from './components/app-bar';
 
-function DefaultLayout({ children }: { children: ReactNode }) {
+function DefaultLayout() {
     return (
         <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
             <AppBar />
@@ -15,7 +17,15 @@ function DefaultLayout({ children }: { children: ReactNode }) {
                     bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
                 }}
             >
-                {children}
+                <Suspense
+                    fallback={
+                        <Box display='flex' justifyContent='center' alignItems='center' width='100%' height='100%'>
+                            <CircularProgress />
+                        </Box>
+                    }
+                >
+                    <Outlet />
+                </Suspense>
             </Box>
         </Container>
     );

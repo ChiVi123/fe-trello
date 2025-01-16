@@ -24,9 +24,9 @@ import { MouseSensor, TouchSensor } from '~libs/dnd-kit-sensors';
 import { ICardEntity } from '~modules/card/entity';
 import { IColumnEntity } from '~modules/column/entity';
 import { generatePlaceholderCard } from '~utils/formatters';
-import Card from './components/card';
-import Column from './components/column';
-import ListColumns from './components/list-columns';
+import Card from './card';
+import Column from './column';
+import ListColumns from './list-columns';
 
 interface IProps {
     columns: IColumnEntity[] | undefined;
@@ -57,7 +57,7 @@ const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({ columns, onMoveColumn, onMoveCardInSameColumn, onMoveCardAnotherColumn }: IProps) {
+function BoardContent({ columns, onMoveColumn, onMoveCardInSameColumn, onMoveCardAnotherColumn }: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -298,4 +298,4 @@ function DashboardPage({ columns, onMoveColumn, onMoveCardInSameColumn, onMoveCa
     );
 }
 
-export default DashboardPage;
+export default BoardContent;
