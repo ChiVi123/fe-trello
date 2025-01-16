@@ -10,12 +10,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-import { IBoardEntity } from '~modules/board/entity';
+import { useSelector } from 'react-redux';
+import { selectCurrentBoard } from '~modules/board/slice';
 import { capitalizeFirstLetter } from '~utils/formatters';
-
-interface IProps {
-    board: IBoardEntity | undefined;
-}
 
 const MENU_STYLE = {
     px: '5px',
@@ -27,7 +24,8 @@ const MENU_STYLE = {
     '&:hover': { bgcolor: 'primary.50' },
 };
 
-function BoardBar({ board }: IProps) {
+function BoardBar() {
+    const board = useSelector(selectCurrentBoard);
     return (
         <Box
             px={2}

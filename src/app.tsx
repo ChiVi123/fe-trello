@@ -1,36 +1,26 @@
 import clonedDeep from 'lodash/cloneDeep';
-import isEmpty from 'lodash/isEmpty';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useAppDispatch } from '~config/store';
 import BoardBarLayout from '~layouts/board-bar-layout';
-import { IBoardEntity } from '~modules/board/entity';
-import { getBoardDetailAPI, moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
+import { getBoardDetailAPI } from '~modules/board/async-thunk';
+import { moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
+import { selectCurrentBoard, updateCurrentBoard } from '~modules/board/slice';
 import { ICardEntity } from '~modules/card/entity';
 import { createCardAPI } from '~modules/card/repository';
 import { IColumnEntity } from '~modules/column/entity';
 import { createColumnAPI, deleteColumnAPI, updateColumnDetailAPI } from '~modules/column/repository';
 import { generatePlaceholderCard } from '~utils/formatters';
-import { mapOrder } from '~utils/sorts';
 import DashboardPage from '~view/dashboard/page';
 
 function App() {
-    const [board, setBoard] = useState<IBoardEntity>();
+    const dispatch = useAppDispatch();
+    const board = useSelector(selectCurrentBoard);
 
     useEffect(() => {
-        getBoardDetailAPI('678278ca7a7569d4837fabe5').then((data) => {
-            data.columns = mapOrder(data.columns, data.columnOrderIds, '_id');
-            data.columns.forEach((item) => {
-                if (isEmpty(item.cards)) {
-                    const placeholder = generatePlaceholderCard(item);
-                    item.cards = [placeholder];
-                    item.cardOrderIds = [placeholder._id];
-                } else {
-                    item.cards = mapOrder(item.cards, item.cardOrderIds, '_id');
-                }
-            });
-            setBoard(data);
-        });
-    }, []);
+        dispatch(getBoardDetailAPI('678278ca7a7569d4837fabe5'));
+    }, [dispatch]);
 
     const handleAddColumn = async (title: string) => {
         if (!board) return;
@@ -44,7 +34,7 @@ function App() {
         clonedBoard.columnOrderIds.push(createdColumn._id);
         clonedBoard.columns.push(createdColumn);
 
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
     };
     const handleAddCard = async (data: { title: string; columnId: string }) => {
         if (!board) return;
@@ -63,7 +53,7 @@ function App() {
             columnTarget.cards.push(createdCard);
         }
 
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
     };
     const handleMoveColumn = async (newOrderedColumns: IColumnEntity[]) => {
         if (!board) return;
@@ -71,7 +61,7 @@ function App() {
         const clonedBoard = clonedDeep(board);
         clonedBoard.columnOrderIds = newColumnOrderIds;
         clonedBoard.columns = newOrderedColumns;
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
 
         await updateBoardDetailAPI(clonedBoard._id, { columnOrderIds: newColumnOrderIds });
     };
@@ -84,7 +74,7 @@ function App() {
         columnTarget.cardOrderIds = cardOrderIds;
         columnTarget.cards = cards;
 
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
 
         updateColumnDetailAPI(columnId, { cardOrderIds });
     };
@@ -99,7 +89,7 @@ function App() {
         const clonedBoard = clonedDeep(board);
         clonedBoard.columnOrderIds = newColumnOrderIds;
         clonedBoard.columns = orderedColumns;
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
 
         let prevCardOrderIds = orderedColumns.find((item) => item._id === prevColumnId)!.cardOrderIds;
         if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = [];
@@ -117,7 +107,7 @@ function App() {
         const clonedBoard = clonedDeep(board);
         clonedBoard.columns = clonedBoard.columns.filter((item) => item._id !== id);
         clonedBoard.columnOrderIds = clonedBoard.columnOrderIds.filter((_id) => _id !== id);
-        setBoard(clonedBoard);
+        dispatch(updateCurrentBoard(clonedBoard));
 
         deleteColumnAPI(id).then((res) => {
             toast.success(res?.deleteResult, { position: 'bottom-left' });
@@ -125,7 +115,7 @@ function App() {
     };
 
     return (
-        <BoardBarLayout board={board}>
+        <BoardBarLayout>
             <DashboardPage
                 columns={board?.columns}
                 onAddColumn={handleAddColumn}
