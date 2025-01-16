@@ -8,8 +8,8 @@ import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { confirmOptions } from '~config/material-ui-confirm';
-import { store } from '~config/store';
 import theme from '~config/theme';
+import { store } from '~core/store';
 import App from './app';
 
 createRoot(document.getElementById('root')!).render(

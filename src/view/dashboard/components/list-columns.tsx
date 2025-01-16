@@ -4,31 +4,48 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import clonedDeep from 'lodash/cloneDeep';
 import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useAppDispatch } from '~core/store';
+import { selectCurrentBoard, updateCurrentBoard } from '~modules/board/slice';
 import { IColumnEntity } from '~modules/column/entity';
+import { createColumnAPI } from '~modules/column/repository';
+import { generatePlaceholderCard } from '~utils/formatters';
 import Column from './column';
 
 interface IProps {
     columns: IColumnEntity[];
-    onAddColumn?(value: string): void;
-    onAddCard?(value: { title: string; columnId: string }): void;
-    onDeleteColumn?(columnId: string): void;
 }
 
-function ListColumns({ columns, onAddColumn, onAddCard, onDeleteColumn }: IProps) {
+function ListColumns({ columns }: IProps) {
     const [openNewColumnForm, setOpenNewColumnForm] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const dispatch = useAppDispatch();
+    const board = useSelector(selectCurrentBoard);
 
     const toggleNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
 
-    const handleAddColumn = () => {
+    const handleAddColumn = async () => {
         if (!inputRef.current!.value) {
             toast.error('Please enter column title!!!', { position: 'bottom-left' });
             return;
         }
 
-        onAddColumn?.(inputRef.current!.value);
+        if (!board) return;
+
+        const title = inputRef.current!.value;
+        const createdColumn = await createColumnAPI({ title, boardId: board?._id });
+        const clonedBoard = clonedDeep(board);
+        const placeholder = generatePlaceholderCard(createdColumn);
+
+        createdColumn.cards = [placeholder];
+        createdColumn.cardOrderIds = [placeholder._id];
+        clonedBoard.columnOrderIds.push(createdColumn._id);
+        clonedBoard.columns.push(createdColumn);
+
+        dispatch(updateCurrentBoard(clonedBoard));
         toggleNewColumnForm();
     };
 
@@ -46,7 +63,7 @@ function ListColumns({ columns, onAddColumn, onAddCard, onDeleteColumn }: IProps
         >
             <SortableContext items={columns.map((item) => item._id)} strategy={horizontalListSortingStrategy}>
                 {columns.map((item) => (
-                    <Column key={item._id} data={item} onAddCard={onAddCard} onDeleteColumn={onDeleteColumn} />
+                    <Column key={item._id} data={item} />
                 ))}
             </SortableContext>
 

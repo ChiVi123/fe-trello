@@ -19,19 +19,23 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import clonedDeep from 'lodash/cloneDeep';
 import { useConfirm } from 'material-ui-confirm';
 import { CSSProperties, MouseEventHandler, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useAppDispatch } from '~core/store';
+import { selectCurrentBoard, updateCurrentBoard } from '~modules/board/slice';
+import { createCardAPI } from '~modules/card/repository';
 import { IColumnEntity } from '~modules/column/entity';
+import { deleteColumnAPI } from '~modules/column/repository';
 import ListCards from './list-cards';
 
 interface IProps {
     data: IColumnEntity;
-    onAddCard?(value: { title: string; columnId: string }): void;
-    onDeleteColumn?(columnId: string): void;
 }
 
-function Column({ data, onAddCard, onDeleteColumn }: IProps) {
+function Column({ data }: IProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: data._id,
         data: { ...data },
@@ -40,7 +44,11 @@ function Column({ data, onAddCard, onDeleteColumn }: IProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [openNewCardForm, setOpenNewCardForm] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
+
     const confirmDeleteColumn = useConfirm();
+
+    const board = useSelector(selectCurrentBoard);
+    const dispatch = useAppDispatch();
 
     const open = Boolean(anchorEl);
     const dndKitColumnStyles: CSSProperties = {
@@ -59,13 +67,32 @@ function Column({ data, onAddCard, onDeleteColumn }: IProps) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleAddCard = () => {
+    const handleAddCard = async () => {
         if (!inputRef.current!.value) {
             toast.error('Please enter card title!!!');
             return;
         }
 
-        onAddCard?.({ title: inputRef.current!.value, columnId: data._id });
+        const title = inputRef.current!.value;
+        const columnId = data._id;
+
+        if (!board) return;
+
+        const createdCard = await createCardAPI({ title, columnId, boardId: board?._id });
+        const clonedBoard = clonedDeep(board);
+
+        const columnTarget = clonedBoard.columns.find((item) => item._id === columnId);
+        if (!columnTarget) return;
+
+        if (columnTarget.cards.some((item) => item.FE_PlaceholderCard)) {
+            columnTarget.cardOrderIds = [createdCard._id];
+            columnTarget.cards = [createdCard];
+        } else {
+            columnTarget.cardOrderIds.push(createdCard._id);
+            columnTarget.cards.push(createdCard);
+        }
+
+        dispatch(updateCurrentBoard(clonedBoard));
         toggleNewCardForm();
     };
     const handleDeleteColumn = () => {
@@ -75,7 +102,15 @@ function Column({ data, onAddCard, onDeleteColumn }: IProps) {
             confirmationText: 'Confirm',
         })
             .then(() => {
-                onDeleteColumn?.(data._id);
+                if (!board) return;
+                const clonedBoard = clonedDeep(board);
+                clonedBoard.columns = clonedBoard.columns.filter((item) => item._id !== data._id);
+                clonedBoard.columnOrderIds = clonedBoard.columnOrderIds.filter((_id) => _id !== data._id);
+                dispatch(updateCurrentBoard(clonedBoard));
+
+                deleteColumnAPI(data._id).then((res) => {
+                    toast.success(res?.deleteResult, { position: 'bottom-left' });
+                });
             })
             .catch(() => {});
     };

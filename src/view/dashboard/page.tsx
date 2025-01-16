@@ -30,9 +30,7 @@ import ListColumns from './components/list-columns';
 
 interface IProps {
     columns: IColumnEntity[] | undefined;
-    onAddColumn?(value: string): void;
     onMoveColumn?(value: IColumnEntity[]): void;
-    onAddCard?(value: { title: string; columnId: string }): void;
     onMoveCardInSameColumn?(columnId: string, cards: ICardEntity[], cardIds: string[]): void;
     onMoveCardAnotherColumn?(
         currentCardId: string,
@@ -40,7 +38,6 @@ interface IProps {
         nextColumnId: string,
         orderedColumns: IColumnEntity[]
     ): void;
-    onDeleteColumn?(columnId: string): void;
 }
 
 type ActiveDragItemType = 'column' | 'card';
@@ -60,15 +57,7 @@ const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
 
-function DashboardPage({
-    columns,
-    onAddColumn,
-    onMoveColumn,
-    onAddCard,
-    onMoveCardInSameColumn,
-    onMoveCardAnotherColumn,
-    onDeleteColumn,
-}: IProps) {
+function DashboardPage({ columns, onMoveColumn, onMoveCardInSameColumn, onMoveCardAnotherColumn }: IProps) {
     const [orderedColumns, setOrderedColumns] = useState<IColumnEntity[]>([]);
     const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
     const [activeDragItemType, setActiveDragItemType] = useState<ActiveDragItemType | null>(null);
@@ -297,12 +286,7 @@ function DashboardPage({
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <ListColumns
-                columns={orderedColumns}
-                onAddColumn={onAddColumn}
-                onAddCard={onAddCard}
-                onDeleteColumn={onDeleteColumn}
-            />
+            <ListColumns columns={orderedColumns} />
 
             <DragOverlay dropAnimation={customDropAnimation}>
                 {!activeDragItemData && null}
