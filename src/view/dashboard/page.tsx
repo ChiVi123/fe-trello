@@ -55,7 +55,7 @@ type MoveCardToAnotherColumnParams = {
     isDragEnd?: boolean;
 };
 
-const checkDragItemCard = (value: Record<string, unknown>): value is ICardEntity => 'columnId' in value;
+const checkDragItemCard = (value: ICardEntity | IColumnEntity): value is ICardEntity => 'columnId' in value;
 const findColumnByCardId = (cardId: string, columns: IColumnEntity[]) => {
     return columns.find((column) => column.cards.map((card) => card._id).includes(cardId));
 };
@@ -187,10 +187,10 @@ function DashboardPage({
         if (!currentData && typeof currentData !== 'object') return;
 
         setActiveDragItemId(active.id);
-        setActiveDragItemType(checkDragItemCard(currentData) ? 'card' : 'column');
+        setActiveDragItemType(checkDragItemCard(currentData as ICardEntity | IColumnEntity) ? 'card' : 'column');
         setActiveDragItemData(currentData as ICardEntity | IColumnEntity);
 
-        if (checkDragItemCard(currentData)) {
+        if (checkDragItemCard(currentData as ICardEntity | IColumnEntity)) {
             setOldColumnWhenDraggingCard(findColumnByCardId(active.id as string, orderedColumns) || null);
         }
     };
