@@ -1,6 +1,6 @@
 import { ICardEntity } from '~modules/card/entity';
 
-export interface IColumnEntity extends Record<string, unknown> {
+export interface IColumnEntity {
     _id: string;
     boardId: string;
     title: string;

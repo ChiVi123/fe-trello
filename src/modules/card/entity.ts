@@ -1,4 +1,4 @@
-export interface ICardEntity extends Record<string, unknown> {
+export interface ICardEntity {
     _id: string;
     boardId: string;
     columnId: string;
