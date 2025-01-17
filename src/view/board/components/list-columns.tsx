@@ -108,6 +108,7 @@ function ListColumns({ columns }: IProps) {
                             size='small'
                             color='success'
                             variant='contained'
+                            className='interceptor-loading'
                             sx={{
                                 border: '1px solid',
                                 borderColor: 'success.main',

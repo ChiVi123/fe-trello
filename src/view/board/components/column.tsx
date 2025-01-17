@@ -263,6 +263,7 @@ function Column({ data }: IProps) {
                                     size='small'
                                     color='success'
                                     variant='contained'
+                                    className='interceptor-loading'
                                     sx={{
                                         border: '1px solid',
                                         borderColor: 'success.main',
@@ -289,9 +290,8 @@ function Column({ data }: IProps) {
                                 justifyContent: 'space-between',
                                 height: '100%',
                             }}
-                            onClick={toggleNewCardForm}
                         >
-                            <Button data-no-dnd='true' startIcon={<AddCardIcon />}>
+                            <Button data-no-dnd='true' startIcon={<AddCardIcon />} onClick={toggleNewCardForm}>
                                 Add new card
                             </Button>
 

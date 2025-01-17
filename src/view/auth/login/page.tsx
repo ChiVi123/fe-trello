@@ -121,11 +121,20 @@ function LoginPage() {
                             <FieldErrorAlert errors={errors} fieldName='password' />
                         </Box>
                     </Box>
+
                     <CardActions sx={{ padding: '0 1em 1em 1em' }}>
-                        <Button type='submit' variant='contained' color='primary' size='large' fullWidth>
+                        <Button
+                            type='submit'
+                            variant='contained'
+                            color='primary'
+                            size='large'
+                            fullWidth
+                            className='interceptor-loading'
+                        >
                             Login
                         </Button>
                     </CardActions>
+
                     <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
                         <Typography>New to Trello MERN Stack?</Typography>
                         <Link to='/register' style={{ textDecoration: 'none' }}>
