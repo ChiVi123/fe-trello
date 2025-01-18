@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import PrivateRoute from '~components/private-route';
 import AuthLayout from '~layouts/auth-layout';
 import BoardBarLayout from '~layouts/board-bar-layout';
 import { notFoundRoute } from '~view/404/router';
@@ -12,8 +13,13 @@ export const browserRouter = createBrowserRouter(
     [
         {
             path: '/',
-            Component: BoardBarLayout,
-            children: [boardsRoute, boardDetailRoute],
+            Component: PrivateRoute,
+            children: [
+                {
+                    Component: BoardBarLayout,
+                    children: [boardsRoute, boardDetailRoute],
+                },
+            ],
         },
         {
             path: '/',

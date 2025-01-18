@@ -7,10 +7,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import { confirmOptions } from '~config/material-ui-confirm';
 import theme from '~config/theme';
 import { store } from '~core/store';
 import App from './app';
+
+const persistor = persistStore(store);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -18,7 +22,9 @@ createRoot(document.getElementById('root')!).render(
             <CssBaseline />
             <ConfirmProvider defaultOptions={confirmOptions}>
                 <ReduxProvider store={store}>
-                    <App />
+                    <PersistGate persistor={persistor}>
+                        <App />
+                    </PersistGate>
                 </ReduxProvider>
             </ConfirmProvider>
             <ToastContainer theme='colored' />
