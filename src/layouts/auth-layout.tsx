@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
+import PageLoadingSpinner from '~components/page-loading-spinner';
 import authBgPath from '~image/login-register-bg.jpg';
 
 function AuthLayout() {
@@ -20,13 +20,7 @@ function AuthLayout() {
                 boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.2)',
             }}
         >
-            <Suspense
-                fallback={
-                    <Box display='flex' justifyContent='center' alignItems='center' width='100%' height='100%'>
-                        <CircularProgress />
-                    </Box>
-                }
-            >
+            <Suspense fallback={<PageLoadingSpinner caption='Loading...' />}>
                 <Outlet />
             </Suspense>
         </Box>

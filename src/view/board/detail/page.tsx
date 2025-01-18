@@ -2,6 +2,7 @@ import clonedDeep from 'lodash/cloneDeep';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import PageLoadingSpinner from '~components/page-loading-spinner';
 import { useAppDispatch } from '~core/store';
 import { getBoardDetailAPI } from '~modules/board/async-thunk';
 import { moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
@@ -70,6 +71,10 @@ function BoardDetailPage() {
             nextCardOrderIds: orderedColumns.find((item) => item._id === nextColumnId)?.cardOrderIds,
         });
     };
+
+    if (!board) {
+        return <PageLoadingSpinner caption='Board loading...' />;
+    }
 
     return (
         <BoardContent

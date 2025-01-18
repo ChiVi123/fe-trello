@@ -1,6 +1,6 @@
 import LockIcon from '@mui/icons-material/Lock';
 import { Card as MuiCard } from '@mui/material';
-// import Alert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import FieldErrorAlert from '~components/field-error-alert';
 import { ReactComponent as TrelloIcon } from '~svg/trello.svg';
 import {
@@ -31,6 +31,9 @@ function LoginPage() {
         handleSubmit,
         formState: { errors },
     } = useForm<ILoginForm>();
+    const [searchParams] = useSearchParams();
+
+    const { registeredEmail, verifiedEmail } = Object.fromEntries([...searchParams]);
 
     const handleLogIn: SubmitHandler<ILoginForm> = async (data) => {
         console.log('🚀 ~ handleLogIn ~ data:', data);
@@ -59,7 +62,7 @@ function LoginPage() {
                         Author: ChiViDev
                     </Box>
 
-                    {/* <Box
+                    <Box
                         sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -68,25 +71,35 @@ function LoginPage() {
                             marginTop: '1em',
                         }}
                     >
-                        <Alert severity='success' sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                            Your email&nbsp;
-                            <Typography component='span' sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>
-                                chividev@gmail.com
-                            </Typography>
-                            &nbsp;has been verified.
-                            <br />
-                            Now you can login to enjoy our services! Have a good day!
-                        </Alert>
+                        {!!verifiedEmail && (
+                            <Alert severity='success' sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                                Your email&nbsp;
+                                <Typography
+                                    component='span'
+                                    sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}
+                                >
+                                    {verifiedEmail}
+                                </Typography>
+                                &nbsp;has been verified.
+                                <br />
+                                Now you can login to enjoy our services! Have a good day!
+                            </Alert>
+                        )}
 
-                        <Alert severity='info' sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                            An email has been sent to&nbsp;
-                            <Typography component='span' sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>
-                                chividev@gmail.com
-                            </Typography>
-                            <br />
-                            Please check and verify your account before logging in!
-                        </Alert>
-                    </Box> */}
+                        {!!registeredEmail && (
+                            <Alert severity='info' sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                                An email has been sent to&nbsp;
+                                <Typography
+                                    component='span'
+                                    sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}
+                                >
+                                    {registeredEmail}
+                                </Typography>
+                                <br />
+                                Please check and verify your account before logging in!
+                            </Alert>
+                        )}
+                    </Box>
 
                     <Box sx={{ padding: '0 1em 1em 1em' }}>
                         <Box sx={{ marginTop: '1em' }}>

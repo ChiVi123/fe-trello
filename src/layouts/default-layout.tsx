@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
+import PageLoadingSpinner from '~components/page-loading-spinner';
 import AppBar from './components/app-bar';
 
 function DefaultLayout() {
@@ -17,13 +17,7 @@ function DefaultLayout() {
                     bgcolor: ({ palette }) => (palette.mode === 'dark' ? '#34495e' : '#1976d2'),
                 }}
             >
-                <Suspense
-                    fallback={
-                        <Box display='flex' justifyContent='center' alignItems='center' width='100%' height='100%'>
-                            <CircularProgress />
-                        </Box>
-                    }
-                >
+                <Suspense fallback={<PageLoadingSpinner caption='Loading...' />}>
                     <Outlet />
                 </Suspense>
             </Box>

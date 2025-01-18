@@ -8,8 +8,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { createSearchParams, Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import FieldErrorAlert from '~components/field-error-alert';
+import { registerAPI } from '~modules/auth/repository';
 import { ReactComponent as TrelloIcon } from '~svg/trello.svg';
 import {
     EMAIL_RULE,
@@ -32,9 +34,13 @@ function RegisterPage() {
         handleSubmit,
         formState: { errors },
     } = useForm<IRegisterForm>();
+    const navigate = useNavigate();
 
     const handleRegister: SubmitHandler<IRegisterForm> = async (data) => {
-        console.log('🚀 ~ handleRegister ~ data:', data);
+        const { email, password } = data;
+        const user = await toast.promise(registerAPI({ email, password }), { pending: 'Registration is pending...' });
+
+        navigate({ pathname: '/login', search: createSearchParams({ registeredEmail: user?.email }).toString() });
     };
     return (
         <form onSubmit={handleSubmit(handleRegister)}>
