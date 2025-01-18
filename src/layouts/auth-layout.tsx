@@ -1,10 +1,15 @@
 import Box from '@mui/material/Box';
 import { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
 import PageLoadingSpinner from '~components/page-loading-spinner';
 import authBgPath from '~image/login-register-bg.jpg';
+import { selectCurrentUser } from '~modules/user/slice';
 
 function AuthLayout() {
+    const user = useSelector(selectCurrentUser);
+    if (user) return <Navigate to='/' replace />;
+
     return (
         <Box
             sx={{

@@ -18,8 +18,10 @@ function BoardDetailPage() {
     const { boardId } = useParams();
 
     useEffect(() => {
-        // dispatch(getBoardDetailAPI('678278ca7a7569d4837fabe5'));
-        dispatch(getBoardDetailAPI(boardId));
+        const promise = dispatch(getBoardDetailAPI(boardId));
+        return () => {
+            promise.abort();
+        };
     }, [boardId, dispatch]);
 
     const handleMoveColumn = async (newOrderedColumns: IColumnEntity[]) => {
