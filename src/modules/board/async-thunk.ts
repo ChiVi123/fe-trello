@@ -4,5 +4,5 @@ import { IBoardEntity } from '~modules/board/entity';
 
 export const getBoardDetailAPI = createAsyncThunk<IBoardEntity, string | undefined>(
     'board/getBoardDetailAPI',
-    async (id) => (await http.get(`/v1/boards/${id}`)).data
+    async (id, { signal }) => (await http.get(`/v1/boards/${id}`, { signal })).data
 );

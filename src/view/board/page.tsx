@@ -15,7 +15,10 @@ function BoardPage() {
     const board = useSelector(selectCurrentBoard);
 
     useEffect(() => {
-        dispatch(getBoardDetailAPI('678278ca7a7569d4837fabe5'));
+        const promise = dispatch(getBoardDetailAPI('678278ca7a7569d4837fabe5'));
+        return () => {
+            promise.abort();
+        };
     }, [dispatch]);
 
     const handleMoveColumn = async (newOrderedColumns: IColumnEntity[]) => {
