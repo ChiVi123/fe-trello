@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import isEmpty from 'lodash/isEmpty';
+import { getBoardDetailAPI } from '~modules/board/async-thunk';
+import { IBoardEntity } from '~modules/board/entity';
 import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
-import { getBoardDetailAPI } from './async-thunk';
-import { IBoardEntity } from './entity';
 
 interface IState {
     currentBoard: IBoardEntity | null;
