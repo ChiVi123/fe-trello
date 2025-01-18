@@ -11,7 +11,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import FieldErrorAlert from '~components/field-error-alert';
-import { registerAPI } from '~modules/auth/repository';
+import { registerAPI } from '~modules/user/repository';
 import { ReactComponent as TrelloIcon } from '~svg/trello.svg';
 import {
     EMAIL_RULE,

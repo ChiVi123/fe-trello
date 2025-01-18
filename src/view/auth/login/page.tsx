@@ -9,8 +9,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import FieldErrorAlert from '~components/field-error-alert';
+import { useAppDispatch } from '~core/store';
+import { loginAPI } from '~modules/user/async-thunk';
 import { ReactComponent as TrelloIcon } from '~svg/trello.svg';
 import {
     EMAIL_RULE,
@@ -32,11 +35,17 @@ function LoginPage() {
         formState: { errors },
     } = useForm<ILoginForm>();
     const [searchParams] = useSearchParams();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const { registeredEmail, verifiedEmail } = Object.fromEntries([...searchParams]);
 
     const handleLogIn: SubmitHandler<ILoginForm> = async (data) => {
-        console.log('🚀 ~ handleLogIn ~ data:', data);
+        const { email, password } = data;
+        const res = await toast.promise(dispatch(loginAPI({ email, password })), { pending: 'Logging in...' });
+        if (!('error' in res)) {
+            navigate('/');
+        }
     };
 
     return (
