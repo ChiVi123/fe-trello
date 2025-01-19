@@ -18,3 +18,4 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
+export type ReduxStore = typeof store;

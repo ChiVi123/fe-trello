@@ -9,16 +9,35 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
+import { useConfirm } from 'material-ui-confirm';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '~core/store';
+import { logoutAPI } from '~modules/user/async-thunk';
+import { selectCurrentUser } from '~modules/user/slice';
 
 function ProfileMenu() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const currentUser = useSelector(selectCurrentUser);
+    const confirmLogout = useConfirm();
+    const dispatch = useAppDispatch();
+
     const open = Boolean(anchorEl);
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+    const handleLogout = () => {
+        confirmLogout({
+            title: 'Log out of your account?',
+            confirmationText: 'Confirm',
+            cancellationText: 'Cancel',
+        })
+            .then(() => dispatch(logoutAPI()))
+            .catch(() => {});
     };
 
     return (
@@ -33,11 +52,7 @@ function ProfileMenu() {
                     sx={{ p: 0, border: ({ palette }) => `1px solid ${palette.text.primary}` }}
                     onClick={handleClick}
                 >
-                    <Avatar
-                        src='https://th.bing.com/th/id/OIP.ajU-6rPRyMYAj4s6uMrCowHaE7?rs=1&pid=ImgDetMain'
-                        alt='user'
-                        sx={{ width: 29, height: 29 }}
-                    />
+                    <Avatar src={currentUser?.avatar} alt={currentUser?.displayName} sx={{ width: 29, height: 29 }} />
                 </IconButton>
             </Tooltip>
             <Menu
@@ -45,15 +60,18 @@ function ProfileMenu() {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                onClick={handleClose}
                 MenuListProps={{
                     'aria-labelledby': 'button-dropdown-top-bar',
                 }}
             >
-                <MenuItem>
-                    <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> Profile
-                </MenuItem>
-                <MenuItem>
-                    <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> My account
+                <MenuItem sx={{ '&:hover': { color: 'success.light' } }}>
+                    <Avatar
+                        src={currentUser?.avatar}
+                        alt={currentUser?.displayName}
+                        sx={{ width: 28, height: 28, mr: 2 }}
+                    />{' '}
+                    Profile
                 </MenuItem>
                 <Divider />
                 <MenuItem>
@@ -68,9 +86,9 @@ function ProfileMenu() {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem>
-                    <ListItemIcon>
-                        <Logout fontSize='small' />
+                <MenuItem sx={{ '&:hover': { color: 'warning.dark' } }} onClick={handleLogout}>
+                    <ListItemIcon sx={{ color: 'inherit' }}>
+                        <Logout color='inherit' fontSize='small' />
                     </ListItemIcon>
                     Logout
                 </MenuItem>
