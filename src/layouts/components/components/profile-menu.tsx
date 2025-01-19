@@ -12,6 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useConfirm } from 'material-ui-confirm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useAppDispatch } from '~core/store';
 import { logoutAPI } from '~modules/user/async-thunk';
 import { selectCurrentUser } from '~modules/user/slice';
@@ -65,12 +66,12 @@ function ProfileMenu() {
                     'aria-labelledby': 'button-dropdown-top-bar',
                 }}
             >
-                <MenuItem sx={{ '&:hover': { color: 'success.light' } }}>
+                <MenuItem component={Link} to='/settings/account' sx={{ '&:hover': { color: 'success.light' } }}>
                     <Avatar
                         src={currentUser?.avatar}
                         alt={currentUser?.displayName}
                         sx={{ width: 28, height: 28, mr: 2 }}
-                    />{' '}
+                    />
                     Profile
                 </MenuItem>
                 <Divider />
