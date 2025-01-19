@@ -11,10 +11,13 @@ import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import { confirmOptions } from '~config/material-ui-confirm';
 import theme from '~config/theme';
+import { injectStoreToAxiosInterceptor } from '~core/http';
 import { store } from '~core/store';
 import App from './app';
 
 const persistor = persistStore(store);
+
+injectStoreToAxiosInterceptor(store);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

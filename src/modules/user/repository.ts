@@ -11,3 +11,4 @@ export const verifyUserAPI = async (verifyData: Record<string, unknown>, signal:
     toast.success('Account verified successfully!', { position: 'bottom-left', theme: 'colored' });
     return res.data;
 };
+export const refreshTokenAPI = async () => (await http.get<{ accessToken?: string }>('v1/users/refresh-token')).data;
