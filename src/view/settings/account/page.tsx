@@ -63,23 +63,22 @@ function SettingsAccountPage() {
     const uploadAvatar: ChangeEventHandler<HTMLInputElement> = (e) => {
         if (!e.target.files) return;
 
-        console.log('🚀 ~ uploadAvatar ~ e.target?.files[0]:', e.target?.files[0]);
-        const error = singleFileValidator(e.target?.files[0]);
+        const { files } = e.target;
+        const error = singleFileValidator(files[0]);
         if (error) {
             toast.error(error);
             return;
         }
 
         const reqData = new FormData();
-        reqData.append('avatar', e.target?.files[0]);
+        reqData.append('avatar', files[0]);
 
-        console.log('🚀 ~ uploadAvatar ~ reqData:', reqData);
-
-        for (const value of reqData.values()) {
-            console.log('🚀 ~ uploadAvatar ~ value:', value);
-        }
-
-        // Call API...
+        toast.promise(dispatch(updateUserAPI(reqData)), { pending: 'Updating...' }).then((res) => {
+            if (!('error' in res)) {
+                toast.success('User updated successfully!');
+            }
+            e.target.value = '';
+        });
     };
 
     return (

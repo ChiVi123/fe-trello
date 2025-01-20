@@ -20,7 +20,7 @@ export const logoutAPI = createAsyncThunk<LogoutRes, boolean | undefined>(
         return res.data;
     }
 );
-type UpdateArgs = Record<string, unknown>;
+type UpdateArgs = Record<string, unknown> | FormData;
 export const updateUserAPI = createAsyncThunk<IUserEntity, UpdateArgs>(
     'user/updateUserAPI',
     async (data) => (await http.put('/v1/users/update', data)).data
