@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import FieldErrorAlert from '~components/field-error-alert';
+import { createBoardAPI } from '~modules/board/repository';
 import { FIELD_REQUIRED_MESSAGE } from '~utils/validators';
 
 enum BOARD_TYPES {
@@ -26,6 +27,9 @@ interface IForm {
     title: string;
     description: string;
     type: BOARD_TYPES;
+}
+interface IProps {
+    onAfterCreate?: () => void;
 }
 
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -45,7 +49,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     },
 }));
 
-function SidebarCreateBoardModal() {
+function SidebarCreateBoardModal({ onAfterCreate }: IProps) {
     const {
         control,
         register,
@@ -62,10 +66,10 @@ function SidebarCreateBoardModal() {
     };
 
     const submitCreateNewBoard: SubmitHandler<IForm> = (data) => {
-        const { title, description, type } = data;
-        console.log('🚀 ~ submitCreateNewBoard ~ title:', title);
-        console.log('🚀 ~ submitCreateNewBoard ~ description:', description);
-        console.log('🚀 ~ submitCreateNewBoard ~ type:', type);
+        createBoardAPI({ ...data }).then(() => {
+            handleCloseModal();
+            onAfterCreate?.();
+        });
     };
 
     return (
