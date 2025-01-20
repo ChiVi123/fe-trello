@@ -39,14 +39,14 @@ http.interceptors.response.use(
     async (interceptorResponseError) => {
         interceptorLoadingElements(false);
 
-        if (interceptorResponseError.response.status === 401 && axiosReduxStore) {
+        if (interceptorResponseError.response?.status === 401 && axiosReduxStore) {
             axiosReduxStore.dispatch(logoutAPI(false));
         }
         const originalRequests = interceptorResponseError.config;
 
         // https://www.thedutchlab.com/insights/using-axios-interceptors-for-refreshing-your-api-token
         // originalRequests._retry = true, meaning the requests were retried at least one time
-        if (interceptorResponseError.response.status === 410 && !originalRequests?._retry) {
+        if (interceptorResponseError.response?.status === 410 && !originalRequests?._retry) {
             originalRequests._retry = true;
 
             if (!refreshTokenPromise) {
@@ -80,7 +80,7 @@ http.interceptors.response.use(
         }
 
         // if status code is 410, should pass
-        if (interceptorResponseError.response.status !== 410) {
+        if (interceptorResponseError.response?.status !== 410) {
             toast.error(errorMessage);
         }
 
