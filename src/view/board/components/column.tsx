@@ -18,17 +18,17 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import clonedDeep from 'lodash/cloneDeep';
 import { useConfirm } from 'material-ui-confirm';
 import { CSSProperties, MouseEventHandler, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import ToggleFocusInput from '~components/toggle-focus-input';
 import { useAppDispatch } from '~core/store';
 import { selectCurrentBoard, updateCurrentBoard } from '~modules/board/slice';
 import { createCardAPI } from '~modules/card/repository';
 import { IColumnEntity } from '~modules/column/entity';
-import { deleteColumnAPI } from '~modules/column/repository';
+import { deleteColumnAPI, updateColumnDetailAPI } from '~modules/column/repository';
 import ListCards from './list-cards';
 
 interface IProps {
@@ -114,6 +114,19 @@ function Column({ data }: IProps) {
             })
             .catch(() => {});
     };
+    const handleUpdateColumnTitle = (newTitle: string) => {
+        updateColumnDetailAPI(data._id, { title: newTitle }).then(() => {
+            if (!board) return;
+
+            const clonedBoard = clonedDeep(board);
+            const columnTarget = clonedBoard.columns.find((item) => item._id === data._id);
+            if (!columnTarget) return;
+
+            columnTarget.title = newTitle;
+
+            dispatch(updateCurrentBoard(clonedBoard));
+        });
+    };
 
     return (
         <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
@@ -140,9 +153,7 @@ function Column({ data }: IProps) {
                         p: 2,
                     }}
                 >
-                    <Typography variant='h6' fontWeight='bold' sx={{ fontSize: '1rem', cursor: 'pointer' }}>
-                        {data.title}
-                    </Typography>
+                    <ToggleFocusInput data-no-dnd='true' value={data.title} onChangedValue={handleUpdateColumnTitle} />
 
                     <Box>
                         <Tooltip title='More options'>
