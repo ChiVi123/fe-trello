@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import PrivateRoute from '~components/private-route';
 import AuthLayout from '~layouts/auth-layout';
 import BoardBarLayout from '~layouts/board-bar-layout';
-import DefaultLayout from '~layouts/default-layout';
+import OnlyAppBarLayout from '~layouts/only-app-bar-layout';
 import SettingsLayout from '~layouts/settings-layout';
 import { notFoundRoute } from '~view/404/router';
 import { loginRoute } from '~view/auth/login/router';
@@ -21,7 +21,7 @@ export const browserRouter = createBrowserRouter(
             Component: PrivateRoute,
             children: [
                 {
-                    Component: DefaultLayout,
+                    Component: OnlyAppBarLayout,
                     children: [boardsRoute],
                 },
                 {
