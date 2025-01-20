@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginAPI, logoutAPI } from '~modules/user/async-thunk';
+import { loginAPI, logoutAPI, updateUserAPI } from '~modules/user/async-thunk';
 import { IUserEntity } from '~modules/user/entity';
 
 interface IState {
@@ -16,6 +16,9 @@ const userSlice = createSlice({
         });
         builder.addCase(logoutAPI.fulfilled, (state) => {
             state.currentUser = null;
+        });
+        builder.addCase(updateUserAPI.fulfilled, (state, { payload }) => {
+            state.currentUser = payload;
         });
     },
     selectors: {

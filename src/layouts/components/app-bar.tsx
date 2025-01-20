@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import SelectThemeMode from '~components/select-theme-mode';
 import TrelloIcon from '~icon/trello';
 import DropdownMenu from './components/dropdown-menu';
@@ -36,7 +37,11 @@ function AppBar() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <AppsIcon sx={{ color: 'white' }} />
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box
+                    component={Link}
+                    to='/'
+                    sx={{ display: 'flex', alignItems: 'center', gap: 0.5, textDecoration: 'none' }}
+                >
                     <TrelloIcon fontSize='small' sx={{ color: 'white' }} />
                     <Typography
                         component='span'

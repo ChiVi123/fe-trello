@@ -3,10 +3,10 @@ import { toast } from 'react-toastify';
 import http from '~core/http';
 import { IUserEntity } from '~modules/user/entity';
 
-type Args = { email: string; password: string };
+type LoginArgs = { email: string; password: string };
 type LogoutRes = { loggedOut: boolean };
 
-export const loginAPI = createAsyncThunk<IUserEntity, Args>(
+export const loginAPI = createAsyncThunk<IUserEntity, LoginArgs>(
     'user/loginAPI',
     async (data) => (await http.post('/v1/users/login', data)).data
 );
@@ -19,4 +19,9 @@ export const logoutAPI = createAsyncThunk<LogoutRes, boolean | undefined>(
         }
         return res.data;
     }
+);
+type UpdateArgs = Record<string, unknown> | FormData;
+export const updateUserAPI = createAsyncThunk<IUserEntity, UpdateArgs>(
+    'user/updateUserAPI',
+    async (data) => (await http.put('/v1/users/update', data)).data
 );
