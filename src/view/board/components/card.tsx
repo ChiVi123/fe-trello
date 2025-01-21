@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { CSSProperties } from 'react';
 import { useAppDispatch } from '~core/store';
 import { ICardEntity } from '~modules/card/entity';
-import { updateCurrentCard } from '~modules/card/slice';
+import { showModalActiveCard, updateCurrentCard } from '~modules/card/slice';
 
 interface IProps {
     data: ICardEntity;
@@ -33,7 +33,10 @@ function Card({ data }: IProps) {
     };
     const shouldShowCardActions = !!data?.memberIds?.length || !!data?.comments?.length || !!data?.attachments?.length;
 
-    const handleClickCard = () => void dispatch(updateCurrentCard(data));
+    const handleClickCard = () => {
+        dispatch(updateCurrentCard(data));
+        dispatch(showModalActiveCard());
+    };
 
     return (
         <MuiCard

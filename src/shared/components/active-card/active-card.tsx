@@ -29,7 +29,12 @@ import VisuallyHiddenInput from '~components/visually-hidden-input';
 import { useAppDispatch } from '~core/store';
 import { updateCardInBoard } from '~modules/board/slice';
 import { updateCardAPI } from '~modules/card/repository';
-import { clearCurrentCard, selectCurrentCard, updateCurrentCard } from '~modules/card/slice';
+import {
+    clearAllStateCard,
+    selectCurrentCard,
+    selectIsShowModalActiveCard,
+    updateCurrentCard,
+} from '~modules/card/slice';
 import { singleFileValidator } from '~utils/validators';
 import ActiveCardSection from './active-card-section';
 import CardDescriptionMdEditor from './card-description-md-editor';
@@ -61,12 +66,10 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
     const dispatch = useAppDispatch();
     const activeCard = useSelector(selectCurrentCard);
+    const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
 
     const updateCardDetail = async (updateData: Record<string, unknown> | FormData) => {
-        if (!activeCard) {
-            if (import.meta.env.DEV) toast.error('activeCard is null!!!');
-            return;
-        }
+        if (!activeCard) return;
 
         const updatedCard = await updateCardAPI(activeCard._id, updateData);
 
@@ -75,7 +78,7 @@ function ActiveCard() {
         return updatedCard;
     };
 
-    const handleCloseModal = () => void dispatch(clearCurrentCard());
+    const handleCloseModal = () => void dispatch(clearAllStateCard());
     const handleUpdateCardTitle = (newTitle: string) => void updateCardDetail({ title: newTitle.trim() });
     const handleUpdateCardDescription = (newDescription: string) => {
         updateCardDetail({ description: newDescription });
@@ -98,7 +101,7 @@ function ActiveCard() {
     };
 
     return (
-        <Modal disableScrollLock open sx={{ overflowY: 'auto' }} onClose={handleCloseModal}>
+        <Modal disableScrollLock open={isShowModalActiveCard} sx={{ overflowY: 'auto' }} onClose={handleCloseModal}>
             <Box
                 sx={{
                     position: 'relative',
