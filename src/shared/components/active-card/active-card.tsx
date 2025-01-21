@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import ToggleFocusInput from '~components/toggle-focus-input';
 import VisuallyHiddenInput from '~components/visually-hidden-input';
 import { useAppDispatch } from '~core/store';
+import { updateCardInBoard } from '~modules/board/slice';
 import { updateCardAPI } from '~modules/card/repository';
 import { clearCurrentCard, selectCurrentCard, updateCurrentCard } from '~modules/card/slice';
 import { singleFileValidator } from '~utils/validators';
@@ -61,7 +62,7 @@ function ActiveCard() {
     const dispatch = useAppDispatch();
     const activeCard = useSelector(selectCurrentCard);
 
-    const updateCardDetail = async (updateData: Record<string, unknown>) => {
+    const updateCardDetail = async (updateData: Record<string, unknown> | FormData) => {
         if (!activeCard) {
             if (import.meta.env.DEV) toast.error('activeCard is null!!!');
             return;
@@ -70,19 +71,17 @@ function ActiveCard() {
         const updatedCard = await updateCardAPI(activeCard._id, updateData);
 
         dispatch(updateCurrentCard(updatedCard));
-        // update board state (store redux)
-
+        dispatch(updateCardInBoard(updatedCard));
         return updatedCard;
     };
 
     const handleCloseModal = () => void dispatch(clearCurrentCard());
-    const handleUpdateCardTitle = (newTitle: string) => {
-        updateCardDetail({ title: newTitle.trim() });
+    const handleUpdateCardTitle = (newTitle: string) => void updateCardDetail({ title: newTitle.trim() });
+    const handleUpdateCardDescription = (newDescription: string) => {
+        updateCardDetail({ description: newDescription });
     };
     const handleUploadCardCover: ChangeEventHandler<HTMLInputElement> = (event) => {
         if (!event.target.files) return;
-
-        console.log('🚀 ~ ActiveCard ~ event.target?.files[0]:', event.target?.files[0]);
 
         const error = singleFileValidator(event.target?.files[0]);
         if (error) {
@@ -92,7 +91,10 @@ function ActiveCard() {
         const reqData = new FormData();
         reqData.append('cardCover', event.target?.files[0]);
 
-        // API...
+        toast.promise(
+            updateCardDetail(reqData).finally(() => (event.target.value = '')),
+            { pending: 'Updating...' }
+        );
     };
 
     return (
@@ -161,7 +163,10 @@ function ActiveCard() {
                                 </Typography>
                             </Box>
 
-                            <CardDescriptionMdEditor />
+                            <CardDescriptionMdEditor
+                                defaultValue={activeCard?.description ?? ''}
+                                onChangeValue={handleUpdateCardDescription}
+                            />
                         </Box>
 
                         <Box sx={{ mb: 3 }}>

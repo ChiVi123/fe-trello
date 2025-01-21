@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import isEmpty from 'lodash/isEmpty';
 import { getBoardDetailAPI } from '~modules/board/async-thunk';
 import { IBoardEntity } from '~modules/board/entity';
+import { ICardEntity } from '~modules/card/entity';
 import { generatePlaceholderCard } from '~utils/formatters';
 import { mapOrder } from '~utils/sorts';
 
@@ -15,6 +16,14 @@ const boardSlice = createSlice({
     reducers: (creators) => ({
         updateCurrentBoard: creators.reducer((state, { payload }: PayloadAction<IBoardEntity>) => {
             state.currentBoard = payload;
+        }),
+        updateCardInBoard: creators.reducer((state, { payload: incomingCard }: PayloadAction<ICardEntity>) => {
+            const column = state.currentBoard?.columns.find((item) => item._id === incomingCard.columnId);
+
+            if (column) {
+                const card = column.cards.find((item) => item._id === incomingCard._id);
+                if (card) Object.assign(card, incomingCard);
+            }
         }),
     }),
     extraReducers: (builder) => {
@@ -38,6 +47,6 @@ const boardSlice = createSlice({
     },
 });
 
-export const { updateCurrentBoard } = boardSlice.actions;
+export const { updateCardInBoard, updateCurrentBoard } = boardSlice.actions;
 export const { selectCurrentBoard } = boardSlice.selectors;
 export const boardReducer = boardSlice.reducer;

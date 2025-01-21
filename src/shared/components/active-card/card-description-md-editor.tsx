@@ -6,27 +6,23 @@ import MDEditor from '@uiw/react-md-editor';
 import { useState } from 'react';
 import rehypeSanitize from 'rehype-sanitize';
 
-const markdownValueExample = `
-  *\`Markdown Content Example:\`*
+interface IProps {
+    defaultValue?: string;
+    onChangeValue?: (value: string) => void;
+}
 
-  **Hello world | Ronaldo siuuu | Trello MERN Stack**
-  [![](https://res.cloudinary.com/dat2lyvva/image/upload/v1737353229/trello-mern/users/lndtpoddwjnb9wodfgc9.jpg)](https://res.cloudinary.com/dat2lyvva/image/upload/v1737353229/trello-mern/users/lndtpoddwjnb9wodfgc9.jpg)
-  \`\`\`typescript
-  import React from "react";
-  import ReactDOM from "react-dom";
-  import MDEditor from '@uiw/react-md-editor';
-  \`\`\`
-`;
 // https://codesandbox.io/embed/markdown-editor-for-react-izdd6?fontsize=14&hidenavigation=1&theme=dark
-function CardDescriptionMdEditor() {
+function CardDescriptionMdEditor({ defaultValue = '', onChangeValue }: IProps) {
     const { mode } = useColorScheme();
 
     const [markdownEditMode, setMarkdownEditMode] = useState(false);
-    const [cardDescription, setCardDescription] = useState(markdownValueExample);
+    const [cardDescription, setCardDescription] = useState(defaultValue);
 
     const updateCardDescription = () => {
         setMarkdownEditMode(false);
-        console.log('🚀 ~ updateCardDescription ~ cardDescription:', cardDescription);
+        if (!cardDescription || cardDescription === defaultValue) return;
+
+        onChangeValue?.(cardDescription);
     };
 
     return (
@@ -35,7 +31,7 @@ function CardDescriptionMdEditor() {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 5 }}>
                     <Box data-color-mode={mode}>
                         <MDEditor
-                            height={400}
+                            height={280}
                             preview='edit'
                             // https://www.npmjs.com/package/@uiw/react-md-editor#security
                             previewOptions={{ rehypePlugins: [[rehypeSanitize]] }}
