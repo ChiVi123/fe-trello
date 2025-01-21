@@ -10,7 +10,9 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CSSProperties } from 'react';
+import { useAppDispatch } from '~core/store';
 import { ICardEntity } from '~modules/card/entity';
+import { showModalActiveCard, updateCurrentCard } from '~modules/card/slice';
 
 interface IProps {
     data: ICardEntity;
@@ -21,6 +23,8 @@ function Card({ data }: IProps) {
         id: data._id,
         data: { ...data },
     });
+    const dispatch = useAppDispatch();
+
     const dndKitCardStyles: CSSProperties = {
         border: isDragging ? '1px solid #2ecc71' : undefined,
         transform: CSS.Translate.toString(transform),
@@ -28,6 +32,11 @@ function Card({ data }: IProps) {
         transition,
     };
     const shouldShowCardActions = !!data?.memberIds?.length || !!data?.comments?.length || !!data?.attachments?.length;
+
+    const handleClickCard = () => {
+        dispatch(updateCurrentCard(data));
+        dispatch(showModalActiveCard());
+    };
 
     return (
         <MuiCard
@@ -44,6 +53,7 @@ function Card({ data }: IProps) {
                 // overflow: data?.FE_PlaceholderCard ? 'hidden': 'unset',
                 '&:hover': { borderColor: 'primary.main' },
             }}
+            onClick={handleClickCard}
         >
             {data.cover && <CardMedia sx={{ height: 140 }} image={data.cover} title={data.title} />}
 

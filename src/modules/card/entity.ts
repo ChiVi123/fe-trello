@@ -1,3 +1,11 @@
+export type CardComment = {
+    userId: string;
+    userEmail: string;
+    userAvatar: string;
+    userDisplayName: string;
+    content: string;
+    commentedAt: number;
+};
 export interface ICardEntity {
     _id: string;
     boardId: string;
@@ -6,7 +14,7 @@ export interface ICardEntity {
     description?: string | null;
     cover?: string | null;
     memberIds?: string[];
-    comments?: string[];
+    comments?: CardComment[];
     attachments?: string[];
     FE_PlaceholderCard?: true;
 }

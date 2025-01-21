@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux';
 import { PersistConfig, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { boardReducer } from '~modules/board/slice';
+import { cardReducer } from '~modules/card/slice';
 import { userReducer } from '~modules/user/slice';
 
-const reducers = combineReducers({ board: boardReducer, user: userReducer });
+const reducers = combineReducers({ board: boardReducer, user: userReducer, card: cardReducer });
 const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
     key: 'root',
     storage,
