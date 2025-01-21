@@ -2,16 +2,15 @@ import AddToDriveIcon from '@mui/icons-material/AddToDrive';
 import BoltIcon from '@mui/icons-material/Bolt';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import VpnLockIcon from '@mui/icons-material/VpnLock';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { useSelector } from 'react-redux';
 import { selectCurrentBoard } from '~modules/board/slice';
 import { capitalizeFirstLetter } from '~utils/formatters';
-import BoardUserGroup from './board-user-group';
+import BoardUserGroup from './components/board-user-group';
+import InviteBoardUser from './components/invite-board-user';
 
 const MENU_STYLE = {
     px: '5px',
@@ -53,14 +52,7 @@ function BoardBar() {
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Button
-                    variant='outlined'
-                    size='small'
-                    startIcon={<PersonAddIcon />}
-                    sx={{ color: 'white', borderColor: 'white', '&:hover': { borderColor: 'white' } }}
-                >
-                    Invite
-                </Button>
+                <InviteBoardUser boardId={board?._id} />
 
                 <BoardUserGroup boardUsers={board?.FE_all_users} />
             </Box>

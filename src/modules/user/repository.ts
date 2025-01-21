@@ -12,3 +12,8 @@ export const verifyUserAPI = async (verifyData: Record<string, unknown>, signal:
     return res.data;
 };
 export const refreshTokenAPI = async () => (await http.get<{ accessToken?: string }>('v1/users/refresh-token')).data;
+export const inviteUserToBoardAPI = async (data: Record<string, unknown>) => {
+    const res = await http.post('v1/invitations/board', data);
+    toast.success('User was invited to board successfully !', { position: 'bottom-left', theme: 'colored' });
+    return res.data;
+};
