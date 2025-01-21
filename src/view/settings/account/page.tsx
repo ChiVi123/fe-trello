@@ -6,7 +6,6 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
-import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -15,6 +14,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import FieldErrorAlert from '~components/field-error-alert';
+import VisuallyHiddenInput from '~components/visually-hidden-input';
 import { useAppDispatch } from '~core/store';
 import { updateUserAPI } from '~modules/user/async-thunk';
 import { selectCurrentUser } from '~modules/user/slice';
@@ -23,20 +23,6 @@ import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~utils/validators';
 interface IForm {
     displayName: string;
 }
-
-// Custom UI file input: https://mui.com/material-ui/react-button/#file-upload
-// MUI recommend: https://github.com/viclafouch/mui-file-input
-const VisuallyHiddenInput = styled('input')({
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: 1,
-    height: 1,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-});
 
 function SettingsAccountPage() {
     const currentUser = useSelector(selectCurrentUser);

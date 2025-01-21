@@ -2,20 +2,23 @@ import clonedDeep from 'lodash/cloneDeep';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import ActiveCard from '~components/active-card';
 import PageLoadingSpinner from '~components/page-loading-spinner';
 import { useAppDispatch } from '~core/store';
 import { getBoardDetailAPI } from '~modules/board/async-thunk';
 import { moveCardAnotherColumnAPI, updateBoardDetailAPI } from '~modules/board/repository';
 import { selectCurrentBoard, updateCurrentBoard } from '~modules/board/slice';
 import { ICardEntity } from '~modules/card/entity';
+import { selectCurrentCard } from '~modules/card/slice';
 import { IColumnEntity } from '~modules/column/entity';
 import { updateColumnDetailAPI } from '~modules/column/repository';
 import BoardContent from '~view/board/components/board-content';
 
 function BoardDetailPage() {
     const dispatch = useAppDispatch();
-    const board = useSelector(selectCurrentBoard);
     const { boardId } = useParams();
+    const board = useSelector(selectCurrentBoard);
+    const activeCard = useSelector(selectCurrentCard);
 
     useEffect(() => {
         const promise = dispatch(getBoardDetailAPI(boardId));
@@ -79,12 +82,15 @@ function BoardDetailPage() {
     }
 
     return (
-        <BoardContent
-            columns={board?.columns}
-            onMoveColumn={handleMoveColumn}
-            onMoveCardInSameColumn={handleMoveCardInSameColumn}
-            onMoveCardAnotherColumn={handleMoveCardAnotherColumn}
-        />
+        <>
+            {activeCard && <ActiveCard />}
+            <BoardContent
+                columns={board?.columns}
+                onMoveColumn={handleMoveColumn}
+                onMoveCardInSameColumn={handleMoveCardInSameColumn}
+                onMoveCardAnotherColumn={handleMoveCardAnotherColumn}
+            />
+        </>
     );
 }
 
