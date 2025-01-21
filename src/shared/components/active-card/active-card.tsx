@@ -99,6 +99,9 @@ function ActiveCard() {
             { pending: 'Updating...' }
         );
     };
+    const handleAddCardComment = async (commentToAdd: Record<string, unknown>) => {
+        await updateCardDetail({ commentToAdd });
+    };
 
     return (
         <Modal disableScrollLock open={isShowModalActiveCard} sx={{ overflowY: 'auto' }} onClose={handleCloseModal}>
@@ -180,7 +183,10 @@ function ActiveCard() {
                                 </Typography>
                             </Box>
 
-                            <ActiveCardSection />
+                            <ActiveCardSection
+                                cardComments={activeCard?.comments}
+                                onAddCardComments={handleAddCardComment}
+                            />
                         </Box>
                     </Grid>
 
