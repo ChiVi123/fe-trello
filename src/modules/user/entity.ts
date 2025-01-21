@@ -4,6 +4,7 @@ enum USER_ROLE {
 }
 
 export interface IUserEntity {
+    _id: string;
     email: string;
     password: string;
     username: string;
