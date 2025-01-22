@@ -2,9 +2,7 @@ import AppsIcon from '@mui/icons-material/Apps';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
-import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -16,6 +14,7 @@ import { Link } from 'react-router-dom';
 import SelectThemeMode from '~components/select-theme-mode';
 import TrelloIcon from '~icon/trello';
 import DropdownMenu from './components/dropdown-menu';
+import Notifications from './components/notification';
 import ProfileMenu from './components/profile-menu';
 
 function AppBar() {
@@ -110,11 +109,7 @@ function AppBar() {
 
                 <SelectThemeMode />
 
-                <Tooltip title='Notification'>
-                    <Badge color='warning' variant='dot' sx={{ cursor: 'pointer' }}>
-                        <NotificationsNoneIcon sx={{ color: 'white' }} />
-                    </Badge>
-                </Tooltip>
+                <Notifications />
 
                 <Tooltip title='Help'>
                     <HelpOutlineIcon sx={{ color: 'white', cursor: 'pointer' }} />
