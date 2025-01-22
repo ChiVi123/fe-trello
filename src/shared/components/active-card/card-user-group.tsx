@@ -9,7 +9,7 @@ import { MouseEventHandler, useState } from 'react';
 import { IUserEntity } from '~modules/user/entity';
 
 interface IProps {
-    boardUsers?: IUserEntity[];
+    cardMemberIds?: IUserEntity[];
 }
 
 function CardUserGroup({ cardMemberIds = [] }: IProps) {
