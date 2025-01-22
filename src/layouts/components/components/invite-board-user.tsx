@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import { MouseEventHandler, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import FieldErrorAlert from '~components/field-error-alert';
+import { socketIO } from '~core/socket';
 import { inviteUserToBoardAPI } from '~modules/user/repository';
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~utils/validators';
 
@@ -37,9 +38,11 @@ function InviteBoardUser({ boardId }: IProps) {
     };
 
     const handleOnSubmit: SubmitHandler<IForm> = (data) => {
-        inviteUserToBoardAPI({ ...data, boardId }).then(() => {
+        inviteUserToBoardAPI({ ...data, boardId }).then((invitation) => {
             setValue('inviteeEmail', null);
             setAnchorPopoverElement(null);
+
+            socketIO.emit('FE_USER_WERE_INVITED_TO_BOARD', invitation);
         });
     };
 

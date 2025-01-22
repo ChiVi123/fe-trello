@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import SelectThemeMode from '~components/select-theme-mode';
 import TrelloIcon from '~icon/trello';
 import DropdownMenu from './components/dropdown-menu';
-import Notifications from './components/notification';
+import Notifications from './components/notifications';
 import ProfileMenu from './components/profile-menu';
 
 function AppBar() {

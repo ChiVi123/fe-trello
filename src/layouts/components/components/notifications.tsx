@@ -14,32 +14,56 @@ import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { BOARD_INVITATION_STATUS } from '~core/constants';
+import { socketIO } from '~core/socket';
 import { useAppDispatch } from '~core/store';
 import { getInvitationsAPI, updateBoardInvitationAPI } from '~modules/notifications/async-thunk';
-import { selectCurrentNotifications } from '~modules/notifications/slice';
+import { INotificationEntity } from '~modules/notifications/entity';
+import { addNotification, selectCurrentNotifications } from '~modules/notifications/slice';
+import { selectCurrentUser } from '~modules/user/slice';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<HTMLSpanElement | null>(null);
+    const [newNotification, setNewNotification] = useState<boolean>(false);
+    const navigate = useNavigate();
+
     const notifications = useSelector(selectCurrentNotifications);
+    const currentUser = useSelector(selectCurrentUser)!;
     const dispatch = useAppDispatch();
 
     const open = Boolean(anchorEl);
 
     useEffect(() => {
         const promise = dispatch(getInvitationsAPI());
+
+        const handleReceiveNewInvitation = (invitation: INotificationEntity) => {
+            if (invitation.inviteeId === currentUser._id) {
+                dispatch(addNotification(invitation));
+                setNewNotification(true);
+            }
+        };
+
+        // https://socket.io/how-to/use-with-react
+        socketIO.on('BE_USER_WERE_INVITED_TO_BOARD', handleReceiveNewInvitation);
+
         return () => {
+            socketIO.off('BE_USER_WERE_INVITED_TO_BOARD', handleReceiveNewInvitation);
             promise.abort();
         };
-    }, [dispatch]);
+    }, [currentUser._id, dispatch]);
 
     const handleUpdateBoardInvitation = (invitationId: string, status: BOARD_INVITATION_STATUS) => {
         dispatch(updateBoardInvitationAPI({ invitationId, status })).then((res) => {
-            console.log('🚀 ~ dispatch ~ res:', res);
+            const notification = res.payload as INotificationEntity;
+            if (notification.boardInvitation?.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+                navigate(`/boards/${notification.boardInvitation.boardId}`);
+            }
         });
     };
     const handleClickNotificationIcon: MouseEventHandler<HTMLSpanElement> = (event) => {
         setAnchorEl(event.currentTarget);
+        setNewNotification(false);
     };
     const handleClose = () => setAnchorEl(null);
 
@@ -52,17 +76,11 @@ function Notifications() {
                     aria-haspopup='true'
                     aria-expanded={open ? 'true' : undefined}
                     color='warning'
-                    // variant="none"
-                    variant='dot'
+                    variant={newNotification ? 'dot' : 'standard'}
                     sx={{ cursor: 'pointer' }}
                     onClick={handleClickNotificationIcon}
                 >
-                    <NotificationsNoneIcon
-                        sx={{
-                            // color: 'white'
-                            color: 'yellow',
-                        }}
-                    />
+                    <NotificationsNoneIcon sx={{ color: newNotification ? 'yellow' : 'white' }} />
                 </Badge>
             </Tooltip>
 
