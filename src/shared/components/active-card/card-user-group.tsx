@@ -9,7 +9,7 @@ import { MouseEventHandler, useState } from 'react';
 import { IUserEntity } from '~modules/user/entity';
 
 interface IProps {
-    boardUsers?: IUserEntity[];
+    cardMemberIds?: IUserEntity[];
 }
 
 function CardUserGroup({ cardMemberIds = [] }: IProps) {
@@ -25,6 +25,8 @@ function CardUserGroup({ cardMemberIds = [] }: IProps) {
         if (!anchorPopoverElement) setAnchorPopoverElement(event.currentTarget);
         else setAnchorPopoverElement(null);
     };
+
+    console.log('🚀 ~ CardUserGroup ~ cardMemberIds:', cardMemberIds);
 
     return (
         <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>

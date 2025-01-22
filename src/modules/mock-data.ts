@@ -1,8 +1,4 @@
-import { IBoardEntity } from './board/entity';
-
-type MockData = { board: IBoardEntity };
-
-export const mockData: MockData = {
+export const mockData = {
     board: {
         _id: 'board-id-01',
         title: 'ChiViDev MERN Stack Board',
