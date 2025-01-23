@@ -6,17 +6,24 @@ import Box from '@mui/material/Box';
 import Popover from '@mui/material/Popover';
 import Tooltip from '@mui/material/Tooltip';
 import { MouseEventHandler, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { CARD_MEMBERS_ACTIONS } from '~core/constants';
+import { selectCurrentBoard } from '~modules/board/slice';
 import { IUserEntity } from '~modules/user/entity';
 
 interface IProps {
-    cardMemberIds?: IUserEntity[];
+    cardMemberIds?: string[];
+    onUpdateCardMembers?: (value: { userId: string; action: CARD_MEMBERS_ACTIONS }) => void;
 }
 
-function CardUserGroup({ cardMemberIds = [] }: IProps) {
+function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }: IProps) {
     const [anchorPopoverElement, setAnchorPopoverElement] = useState<HTMLDivElement | null>(null);
+    const currentBoard = useSelector(selectCurrentBoard);
 
-    const src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0KwDNZxHDHnlRVMHvkp3RIrP8Zg9i6STdUg&s';
-    const alt = 'Ronaldo in 2008';
+    const isUserInCardMembers = (id: string): boolean => cardMemberIds.includes(id);
+    const FE_card_members = cardMemberIds.map((memberId) =>
+        currentBoard?.FE_all_users.find((user) => user._id === memberId)
+    );
 
     const isOpenPopover = Boolean(anchorPopoverElement);
     const popoverId = isOpenPopover ? 'card-all-users-popover' : undefined;
@@ -25,14 +32,23 @@ function CardUserGroup({ cardMemberIds = [] }: IProps) {
         if (!anchorPopoverElement) setAnchorPopoverElement(event.currentTarget);
         else setAnchorPopoverElement(null);
     };
-
-    console.log('🚀 ~ CardUserGroup ~ cardMemberIds:', cardMemberIds);
+    const handleUpdateCardMembers = (user: IUserEntity) => {
+        const incomingUserInfo = {
+            userId: user._id,
+            action: isUserInCardMembers(user._id) ? CARD_MEMBERS_ACTIONS.REMOVE : CARD_MEMBERS_ACTIONS.ADD,
+        };
+        onUpdateCardMembers?.(incomingUserInfo);
+    };
 
     return (
         <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-            {[...Array(8)].map((_, index) => (
-                <Tooltip key={index} title={alt}>
-                    <Avatar sx={{ width: 34, height: 34, cursor: 'pointer' }} alt={alt} src={src} />
+            {FE_card_members?.map((item) => (
+                <Tooltip key={item?._id} title={item?.displayName}>
+                    <Avatar
+                        sx={{ width: 34, height: 34, cursor: 'pointer' }}
+                        alt={item?.displayName}
+                        src={item?.avatar}
+                    />
                 </Tooltip>
             ))}
 
@@ -73,16 +89,21 @@ function CardUserGroup({ cardMemberIds = [] }: IProps) {
                 onClose={handleTogglePopover}
             >
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, maxWidth: '260px', p: 2 }}>
-                    {[...Array(16)].map((_, index) => (
-                        <Tooltip key={index} title={alt}>
+                    {currentBoard?.FE_all_users.map((item) => (
+                        <Tooltip key={item._id} title={item.displayName}>
                             {/* https://mui.com/material-ui/react-avatar/#with-badge */}
                             <Badge
                                 overlap='rectangular'
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                badgeContent={<CheckCircleIcon fontSize='small' sx={{ color: '#27ae60' }} />}
+                                badgeContent={
+                                    isUserInCardMembers(item._id) ? (
+                                        <CheckCircleIcon fontSize='small' sx={{ color: '#27ae60' }} />
+                                    ) : null
+                                }
                                 sx={{ cursor: 'pointer' }}
+                                onClick={() => handleUpdateCardMembers(item)}
                             >
-                                <Avatar alt={alt} src={src} sx={{ width: 34, height: 34 }} />
+                                <Avatar alt={item.displayName} src={item.avatar} sx={{ width: 34, height: 34 }} />
                             </Badge>
                         </Tooltip>
                     ))}

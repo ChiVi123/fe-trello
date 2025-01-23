@@ -9,7 +9,8 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import DvrOutlinedIcon from '@mui/icons-material/DvrOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
+import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
@@ -26,6 +27,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import ToggleFocusInput from '~components/toggle-focus-input';
 import VisuallyHiddenInput from '~components/visually-hidden-input';
+import { CARD_MEMBERS_ACTIONS } from '~core/constants';
 import { useAppDispatch } from '~core/store';
 import { updateCardInBoard } from '~modules/board/slice';
 import { updateCardAPI } from '~modules/card/repository';
@@ -35,6 +37,7 @@ import {
     selectIsShowModalActiveCard,
     updateCurrentCard,
 } from '~modules/card/slice';
+import { selectCurrentUser } from '~modules/user/slice';
 import { singleFileValidator } from '~utils/validators';
 import ActiveCardSection from './active-card-section';
 import CardDescriptionMdEditor from './card-description-md-editor';
@@ -67,6 +70,7 @@ function ActiveCard() {
     const dispatch = useAppDispatch();
     const activeCard = useSelector(selectCurrentCard);
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
+    const currentUser = useSelector(selectCurrentUser)!;
 
     const updateCardDetail = async (updateData: Record<string, unknown> | FormData) => {
         if (!activeCard) return;
@@ -101,6 +105,9 @@ function ActiveCard() {
     };
     const handleAddCardComment = async (commentToAdd: Record<string, unknown>) => {
         await updateCardDetail({ commentToAdd });
+    };
+    const handleUpdateCardMembers = (incomingUserInfo: { userId: string; action: CARD_MEMBERS_ACTIONS }) => {
+        updateCardDetail({ incomingUserInfo });
     };
 
     return (
@@ -158,7 +165,10 @@ function ActiveCard() {
                         <Box sx={{ mb: 3 }}>
                             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
 
-                            <CardUserGroup />
+                            <CardUserGroup
+                                cardMemberIds={activeCard?.memberIds}
+                                onUpdateCardMembers={handleUpdateCardMembers}
+                            />
                         </Box>
 
                         <Box sx={{ mb: 3 }}>
@@ -194,10 +204,36 @@ function ActiveCard() {
                     <Grid size={{ xs: 12, sm: 3 }}>
                         <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Add To Card</Typography>
                         <Stack direction='column' spacing={1}>
-                            <SidebarItem className='active'>
-                                <PersonOutlineOutlinedIcon fontSize='small' />
-                                Join
-                            </SidebarItem>
+                            {!activeCard?.memberIds?.includes(currentUser._id) && (
+                                <SidebarItem
+                                    className='active'
+                                    onClick={() =>
+                                        handleUpdateCardMembers({
+                                            userId: currentUser._id,
+                                            action: CARD_MEMBERS_ACTIONS.ADD,
+                                        })
+                                    }
+                                >
+                                    <PersonAddAlt1OutlinedIcon fontSize='small' />
+                                    Join
+                                </SidebarItem>
+                            )}
+
+                            {activeCard?.memberIds?.includes(currentUser._id) && (
+                                <SidebarItem
+                                    className='active'
+                                    onClick={() =>
+                                        handleUpdateCardMembers({
+                                            userId: currentUser._id,
+                                            action: CARD_MEMBERS_ACTIONS.REMOVE,
+                                        })
+                                    }
+                                >
+                                    <PersonRemoveAlt1OutlinedIcon fontSize='small' />
+                                    Leave
+                                </SidebarItem>
+                            )}
+
                             <SidebarItem {...{ component: 'label' }} className='active'>
                                 <ImageOutlinedIcon fontSize='small' />
                                 Cover
