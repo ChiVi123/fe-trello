@@ -17,6 +17,7 @@ export default defineConfig({
             { find: '~image', replacement: '/src/shared/assets/image' },
             { find: '~svg', replacement: '/src/shared/assets/svg' },
             { find: '~components', replacement: '/src/shared/components' },
+            { find: '~hook', replacement: '/src/shared/hook' },
             { find: '~utils', replacement: '/src/shared/utils' },
             { find: '~view', replacement: '/src/view' },
         ],
