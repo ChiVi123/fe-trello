@@ -34,6 +34,7 @@
             "~image/*": ["./src/shared/assets/image/*"],
             "~svg/*": ["./src/shared/assets/svg/*"],
             "~components/*": ["./src/shared/components/*"],
+            "~hook/*": ["./src/shared/hook/*"],
             "~utils/*": ["./src/shared/utils/*"],
             "~view/*": ["./src/view/*"]
         }

@@ -1,25 +1,19 @@
 import AppsIcon from '@mui/icons-material/Apps';
-import CloseIcon from '@mui/icons-material/Close';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SelectThemeMode from '~components/select-theme-mode';
 import TrelloIcon from '~icon/trello';
 import DropdownMenu from './components/dropdown-menu';
 import Notifications from './components/notifications';
 import ProfileMenu from './components/profile-menu';
+import TopBarSearchBoard from './components/search-bar';
 
 function AppBar() {
-    const [search, setSearch] = useState<string>('');
-
     return (
         <Box
             px={2}
@@ -68,44 +62,7 @@ function AppBar() {
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <TextField
-                    id='search-bar'
-                    label='Search'
-                    type='text'
-                    size='small'
-                    value={search}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                    <SearchIcon sx={{ color: 'white' }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position='end'>
-                                    <CloseIcon
-                                        fontSize='small'
-                                        sx={{ color: search ? 'white' : 'transparent', cursor: 'pointer' }}
-                                        onClick={() => setSearch('')}
-                                    />
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                    sx={{
-                        minWidth: 120,
-                        maxWidth: 180,
-                        '& label': { color: 'white' },
-                        '& input': { color: 'white' },
-                        '& label.Mui-focused': { color: 'white' },
-                        '& .MuiOutlinedInput-root': {
-                            '& fieldset': { borderColor: 'white' },
-                            '&:hover fieldset': { borderColor: 'white' },
-                            '&.Mui-focused fieldset': { borderColor: 'white' },
-                        },
-                    }}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
+                <TopBarSearchBoard />
 
                 <SelectThemeMode />
 
